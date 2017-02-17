@@ -1,7 +1,6 @@
 Final Project - Interactive Data Visualization  
 ===
- 
-                        
+*Please check more detail in [Project-Proposal by Congyang-Yimin-Xiaoqun final.pdf](https://github.com/coyawa/DataVisFinal/blob/master/Project-Proposal%20by%20Congyang-Yimin-Xiaoqun%20final.pdf)*                        
 ##Project Title: 
 Worldwide Human Migration  
 
