@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+	<script src="//d3js.org/d3.geo.projection.v0.min.js"></script>
+	<script src="https://d3js.org/d3-color.v1.min.js"></script>
+	<script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+  
+
+    <style>
+    @import url(style.css);
+    #circle circle {
+    fill: none;
+    pointer-events: all;
+    }
+    .group path {
+    fill-opacity: .5;
+    }
+    path.chord {
+    stroke: #000;
+    stroke-width: .25px;
+    }
+    #circle:hover path.fade {
+    display: none;
+    }
+    .d3-tip {
+      line-height: 1;
+      font-weight: bold;
+      padding: 18px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      border-radius: 2px;
+    }
+
+    /* Creates a small triangle extender for the tooltip */
+    .d3-tip:after {
+      box-sizing: border-box;
+      display: inline;
+      font-size: 10px;
+      width: 100%;
+      line-height: 1;
+      color: rgba(0, 0, 0, 0.8);
+      content: "\25BC";
+      /*position: absolute;*/
+      text-align: center;
+    }
+
+    /* Style northward tooltips differently */
+    .d3-tip.n:after {
+      margin: -1px 0 0 0;
+      top: 100%;
+      left: 0;
+    }
+    body{
+    	text-align:center;
+    }
+
+    .parent{
+    	margin: 0 auto;
+    }
+    .block:before {
+  		content: '';
+  		display: inline-block;
+  		height: 100%;
+  		vertical-align: middle;
+ 	 	margin-right: -0.25em; /* Adjusts for spacing */
+ 	}
+    .country_path{
+        fill: none;
+        stroke: #a9a9a9;
+        stroke-width: 1;
+    }
+    .country_path:hover{
+    	fill-opacity:0.5;
+    	stroke-width:3;
+    }
+    #mapsvg{
+        font: 15px sans-serif;
+    }
+    #parallelsvg{
+        font: 15px sans-serif;
+    }
+	#tooltip {
+        position: absolute;
+        text-align: center;
+        padding: 20px;
+        margin: 10px;
+        font: 12px sans-serif;
+        background: lightsteelblue;
+        border: 1px;
+        border-radius: 2px;
+        pointer-events: none;
+        z-index:99999999；
+    }
+    #tooltip h4{
+        margin:0;
+        font-size:14px;
+    }
+    #tooltip{
+        background:rgba(0,0,0,0.9);
+        border:1px solid grey;
+        border-radius:5px;
+        font-size:12px;
+        width:auto;
+        padding:4px;
+        color:white;
+        opacity:0;
+    }
+    #tooltip table{
+        table-layout:fixed;
+    }
+    #tooltip tr td{
+        padding:0;
+        margin:0;
+    }
+    #tooltip tr td:nth-child(1){
+        width:50px;
+    }
+    #tooltip tr td:nth-child(2){
+        text-align:center;
+    }
+
+    #button60{
+    	position: absolute;
+    	top:400px;
+    }
+    #button70{
+    	position: absolute;
+    	top:455px;
+    }
+    #button80{
+    	position: absolute;
+    	top:510px;
+    }
+    #button90{
+    	position: absolute;
+    	top:565px;
+    }
+    #button00{
+    	position: absolute;
+    	top:620px;
+    }
+    .button {
+        display: inline-block;
+        border-radius: 4px;
+        background-color: #f4511e;
+        border: none;
+        color: #FFFFFF;
+        text-align: center;
+        font-size: 28px;
+        padding: 10px;
+        width: 170px;
+        height: 50px;
+        transition: all 0.5s;
+        cursor: pointer;
+        margin: 5px;
+    }
+    .button span {
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        transition: 0.5s;
+    }
+    .button span:after {
+        content: '\00bb';
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: -20px;
+        transition: 0.5s;
+    }
+    .button:hover span {
+        padding-right: 25px;
+    }
+    .button:hover span:after {
+        opacity: 1;
+        right: 0;
+    }
+    .foreground path {
+        fill: none;
+        stroke: #222;
+        stroke-opacity: 0.38;
+        pointer-events: none;
+        stroke-width: 1.5px;
+    }
+    .axis .title {
+        font-size: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+        transform: rotate(-12deg) translate(-5px,-6px);
+    }
+    .axis line,
+    .axis path {
+        fill: none;
+        stroke: #000;
+        stroke-width: 1px;
+    }
+    .brush .extent {
+        fill-opacity: .3;
+        stroke: #fff;
+        stroke-width: 1px;
+    }
+
+    pre {
+        width: 1200px;
+        height: 900px;
+        margin: 10px 30px;
+        tab-size: 12;
+        font-size: 20px;
+        overflow: auto;
+    }
+    </style>
+</head>
+
+<body>
+<div class = "parent">
+	<div class = "child1" id = 'worldmap' align="center" style = "position: relative; height: 1000px">
+		<button class="button" id = 'button60' onclick="yearchange(1960)"><span>1960</span></button>
+		<button class="button" id = 'button70' onclick="yearchange(1970)"><span>1970</span></button>
+		<button class="button" id = 'button80' onclick="yearchange(1980)"><span>1980</span></button>
+		<button class="button" id = 'button90' onclick="yearchange(1990)"><span>1990</span></button>
+		<button class="button" id = 'button00' onclick="yearchange(2000)"><span>2000</span></button>
+	</div>
+  <div>
+<!--Parallel-->
+    <div class = 'child2' id = 'textmap' align="center" style="height: 200px"></div>
+    <aside><font color="red">Human Migration Chord</font></aside>
+    <div class = 'child4' id = 'chordChart' align="center" style="height: 900px"></div>
+	<div class = 'child3' id = 'parallel' align="center" style="height: 900px"></div>
+<div class = div id = "tooltip"></div>
+</div>
+
+<script src="Chord.js"></script>
+
+<script type="text/javascript">
+	var height = 850;
+	var width = 1600
+	var dispatch1 = d3.dispatch('load');
+	var dispatch2 = d3.dispatch('load');
+    var jsonData = undefined;
+    var csvData = undefined;
+    var yearchoose = 2000;
+    var projection = d3.geo.mercator()
+    	.scale([200])
+    	.translate([width / 2, height/1.4 ]);
+
+	var path = d3.geo.path()
+    	.projection(projection);
+
+    d3.json("data/data.json", function(error, data){
+        console.log(data);
+    	if (error) throw error;
+    	jsonData = data;
+    	dispatch1.load(data);
+
+    });
+    d3.csv('data/parallel.csv', function (error, data) {
+        if (error) throw error;
+        // initial load for all of the maps
+        dispatch2.load(data);
+        csvData = data;
+    });
+
+    function processmapdata(data){
+		var map_pop = {},
+    		map_out = {},
+    		map_in = {};
+    	//console.log(data[0].Country)
+    	for(var i=0; i<data.length; i++){
+    		var key = data[i].CountryCode,
+    			key2 = data[i].CountrytoCode;
+    		if (data[i].Year == yearchoose){
+    			if (!map_pop.hasOwnProperty(key)) {
+    				map_pop[key] = data[i].Population
+    			};
+    			if (!map_out.hasOwnProperty(key)) {
+    				map_out[key] = data[i].Volume
+    			}
+    			else{
+					map_out[key] += data[i].Volume
+    			};
+    			if (!map_in.hasOwnProperty(key2)) {
+    				map_in[key2] = data[i].Volume
+    			}
+    			else{
+					map_in[key2] += data[i].Volume
+    			};
+    		}
+    	};
+
+    	//console.log(map_pop);
+    	//console.log(map_in);
+    	//console.log(map_out);
+
+    	var mapdata = [];
+    	for(i in map_pop){
+    		for(j in map_out){
+    			for(m in map_in){
+    				if (i ==j && i==m){
+    					var dict = {};
+    					dict['CountryCode'] = i;
+    					dict['Population'] = map_pop[i];
+    					dict['Moveout'] = map_out[i];
+    					dict['Movein'] = map_in[i];
+    					mapdata.push(dict);
+    				}else{
+    					continue;
+    				}
+    			}
+    		}
+    	}
+    	//console.log(map_pop);
+    	return mapdata;
+
+    };
+
+	function maptoolTip(d){
+    	for (i in mapdata){
+        	if(d.id == mapdata[i].CountryCode){
+            	return "<h4>"+d.properties.name+"</h4><table>"+
+                "<tr><td>Population</td><td>"+(mapdata[i].Population)+"</td></tr>"+
+                "<tr><td>Movein</td><td>"+(mapdata[i].Movein)+"</td></tr>"+
+                "<tr><td>Moveout</td><td>"+(mapdata[i].Moveout)+"</td></tr>"+
+                "</table>";
+        	}
+    	}
+	};
+	function mouseOvermap(d){
+        d3.select("#tooltip").transition().duration(200).style("opacity", .9);
+        d3.select("#tooltip").html(maptoolTip(d))
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY - 28) + "px");
+	};
+
+	function mouseOutmap(){
+        d3.select("#tooltip").transition().duration(500).style("opacity", 0);
+	};
+	function drawmap(data){
+		var svgMap = d3.select("#worldmap").append('svg')
+            .attr("height", height).attr("width", width)
+            .attr("id", "mapsvg");
+		var pop_max = 0;
+    	var pop_min = Infinity;
+    	mapdata = processmapdata(data);
+    	for (var i= 0 ; i< mapdata.length; i++){
+    		//console.log(mapdata[i].Population);
+    		if(mapdata[i].Population< pop_min){ pop_min = mapdata[i].Population};
+    		if(mapdata[i].Population> pop_max){ pop_max = mapdata[i].Population};
+    	};
+    	//console.log(pop_min)
+    	//console.log(pop_max)
+    	var color = d3.scale.linear().domain([50000,500000,2000000,5000000,10000000,50000000,100000000,500000000,1300000000]).range(d3.schemeYlOrRd[9]);
+    	//console.log(color(120000000))
+    	var legend = svgMap.selectAll("g.legend")
+    				.data([50000,500000,2000000,5000000,10000000,50000000,100000000,500000000,1300000000])
+    				.enter().append("g").attr("class", "maplegend")
+    	legend.append("rect").attr("x", function(d,i){return 20 + i*45;})
+    	.attr("y", height-100)
+    	.attr("width", 45)
+    	.attr("height", 10)
+    	.style("fill", function(d,i){ return color(d)})
+
+    	legend.append("text")
+  		.attr("x", function(d, i){ return 25 + i*45;})
+  		.attr("y", height-70)
+  		.data(['50K','0.5M','2M','5M','10M','50M','100M','0.5B','1.3B'])
+  		.text(function(d){ return d; });
+
+    	d3.json("data/countries.geo.json", function(error, pathdata){
+    		if(error) throw error;
+    		svgMap.selectAll("path")
+    		.data(pathdata.features)
+    		.enter()
+    		.append("path").attr("class","country_path")
+    		.attr("d",path)
+    		.style("fill",function(d){
+    			for(i in mapdata){
+    				if(d.id == mapdata[i].CountryCode){
+    					return color(mapdata[i].Population);
+    				}
+    			}
+    		})
+    		.on("mouseover", mouseOvermap).on("mouseout", mouseOutmap);
+    		//console.log(pathdata.features[0].properties.name);
+    		//console.log(map_pop);
+    	})
+	}
+
+
+	dispatch1.on("load.map", function(data){
+    	drawmap(data);
+    });
+    function yearchange(year){
+    		yearchoose = year;
+    		d3.select('#mapsvg').remove();
+    		drawmap(jsonData);
+    }
+
+
+
+    dispatch2.on("load.parallel", function(data){
+    	drawparallel(data);
+    });
+    function drawparallel(data){
+        //console.log(data);
+    	var margin = {top: 60, right: 10, bottom: 10, left: 70};
+        var para_height = 400;
+        var para_width = 1200;
+		var x = d3.scale.ordinal().rangePoints([0, para_width-margin.left], 1),
+    		y = {},
+    		dragging = {};
+
+		var line = d3.svg.line(),
+    		axis = d3.svg.axis().orient("left"),
+    		background,
+    		foreground;
+
+		var svgpara = d3.select("#parallel").append("svg").attr('id','parallelsvg')
+    		.attr("width", para_width+ margin.left + margin.right)
+    		.attr("height", para_height+ margin.top + margin.bottom)
+  			.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        //var output = d3.select("#parallel").append("pre");
+        var types = {
+                "Number": {
+                    key: "Number",
+                    coerce: function(d) { return +d; },
+                    extent: d3.extent,
+                    within: function(d, extent) { return extent[0] <= d && d <= extent[1]; },
+                    defaultScale: d3.scale.linear().range([para_height, 0])
+                },
+                "String": {
+                    key: "String",
+                    coerce: String,
+                    extent: function (data) { return data.sort(); },
+                    within: function(d, extent, dim) { return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1]; },
+                    defaultScale: d3.scale.ordinal().rangePoints([0, para_height])
+                }
+            };
+        var dimensions = [
+                {
+                    name: "InorOut",
+                    scale: d3.scale.ordinal().rangePoints([0, para_height]),
+                    type: types["String"],
+                    domain: ["Moveout", "Movein"]
+                },
+
+/*                {
+                    name: "Develop",
+                    scale: d3.scale.linear().range([height, 0]),
+                    type: types["String"],
+                    domain: ["Developed", "Developing"]
+                },*/
+                {
+                    name: "1960",
+                    scale: d3.scale.linear().range([para_height, 0]),
+                    type: types["Number"]
+                },
+                {
+                    name: "1970",
+                    scale: d3.scale.linear().range([para_height, 0]),
+                    type: types["Number"]
+                },
+                {
+                    name: "1980",
+                    scale: d3.scale.linear().range([para_height, 0]),
+                    type: types["Number"]
+                },
+                {
+                    name: "1990",
+                    scale: d3.scale.linear().range([para_height, 0]),
+                    type: types["Number"]
+                },
+                {
+                    name: "2000",
+                    scale: d3.scale.linear().range([para_height, 0]),
+                    type: types["Number"]
+                }
+            ];
+        var color_parall = d3.scale.ordinal().range(["#fb6542","#ffbb00"]);
+        var x = d3.scale.ordinal()
+                .domain(dimensions.map(function(dim) {
+                     //console.log(dim);
+                     return dim.name;
+                }))
+                .rangePoints([0, para_width-margin.left]);
+        var line = d3.svg.line().defined(function(d) {
+                    //console.log(d);
+                    return !isNaN(d[1]);
+                });
+        var yAxis = d3.svg.axis().orient("left");
+        var dimension = svgpara.selectAll(".dimension")
+                .data(dimensions)
+                .enter().append("g")
+                .attr("class", "dimension")
+                .attr("transform", function(d) {
+                    //console.log(d.name);
+                    return "translate(" + x(d.name) + ")";
+                });
+        //console.log(dimensions);
+        var colordimension = dimensions[0];
+        data.forEach(function(d) {
+            dimensions.forEach(function(p) {
+                if (p.name in d){
+                    d[p.name] = p.type.coerce(d[p.name]);
+                };
+            });
+        });
+
+        dimensions.forEach(function(dim) {
+            //console.log(dim.domain);
+            if (!("domain" in dim)) {
+                dim.domain  = d3.functor(dim.type.extent)(data.map(function(d) { return d[dim.name]; }));
+            }
+            dim.scale.domain(dim.domain);
+        });
+        color_parall.domain(colordimension.scale.domain());
+        //console.log(colordimension.name);
+        svgpara.append("g")
+            .attr("class", "foreground")
+            .selectAll("path")
+            .data(data)
+            .enter().append("path")
+            .attr("d", draw)
+            .style("stroke", function(d) { return color_parall(d[colordimension.name]); });
+        dimension.append("g")
+            .attr("class", "axis")
+            .each(function(d) { d3.select(this).call(yAxis.scale(d.scale)); })
+            .append("text")
+            .attr("class", "title")
+            .attr("text-anchor", "middle")
+            .attr("y", -9)
+            .text(function(d) { return d.name; });
+        dimension.append("g")
+            .attr("class", "brush")
+            .each(function(d) {
+                d3.select(this).call(d.brush = d3.svg.brush()
+                    .y(d.scale)
+                    .on("brushstart", brushstart)
+                    .on("brush", brush));
+            })
+            .selectAll("rect")
+            .attr("x", -8)
+            .attr("width", 16);
+
+        //output.text(d3.tsv.format(data));
+
+
+        function draw(d) {
+            return line(dimensions.map(function(dim) {
+                return [x(dim.name), dim.scale(d[dim.name])];
+            }));
+        };
+    function brushstart() {
+        d3.event.sourceEvent.stopPropagation();
+    };
+
+    // Handles a brush event, toggling the display of foreground lines.
+    function brush() {
+        var actives = dimensions.filter(function(p) { return !p.brush.empty(); }),
+            extents = actives.map(function(p) { return p.brush.extent(); });
+
+        var selected = [];
+
+        d3.selectAll(".foreground path").style("display", function(d) {
+          if (actives.every(function(dim, i) {
+              // test if point is within extents for each active brush
+              return dim.type.within(d[dim.name], extents[i], dim);
+            })) {
+            selected.push(d);
+            return null;
+          }
+          return "none";
+        });
+
+        //output.text(d3.tsv.format(selected));
+    };
+    };
+</script>
+</body>
+</html>

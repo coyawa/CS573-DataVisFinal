@@ -9,6 +9,9 @@ Congyang Wang | Email: cwang8@wpi.edu   | Github: @coyawa
 Yimin Lin             | Email: ylin6@wpi.edu        | Github: @YiminLin1994  
 Xiaoqun Wang    | Email: xwang16@wpi.edu  | Github: @ntugigolo  
 
+##Prototype Demo:
+https://http://coyawa.github.io/DataVisFinal  
+
 ##Project Repo:
 https://github.com/coyawa/DataVisFinal  
 
