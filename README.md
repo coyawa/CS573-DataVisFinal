@@ -10,7 +10,7 @@ Yimin Lin             | Email: ylin6@wpi.edu        | Github: @YiminLin1994
 Xiaoqun Wang    | Email: xwang16@wpi.edu  | Github: @ntugigolo  
 
 ##Prototype Demo:
-https://http://coyawa.github.io/DataVisFinal/index.html  
+http://coyawa.github.io/DataVisFinal/index.html  
 
 ##Project Repo:
 https://github.com/coyawa/DataVisFinal  
@@ -48,3 +48,5 @@ https://www.worldbank.org/en/topic/migrationremittancesdiasporaissues/brief/migr
 http://data.worldbank.org/indicator/SP.POP.TOTL   
 
 *Please check more detail in [Project-Proposal by Congyang-Yimin-Xiaoqun final.pdf](https://github.com/coyawa/DataVisFinal/blob/master/Project-Proposal%20by%20Congyang-Yimin-Xiaoqun%20final.pdf)* 
+
+
