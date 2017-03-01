@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- The whlo style of the visualization -->
+    <head>
+        <meta charset="utf-8">
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <script src="//d3js.org/d3.geo.projection.v0.min.js"></script>
+        <script src="http://d3js.org/d3-color.v1.min.js"></script>
+        <script src="http://d3js.org/d3-interpolate.v1.min.js"></script>
+        <script src="http://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+		<script src="https://afarkas.github.io/webshim/js-webshim/minified/polyfiller.js"></script>
+	    <script src="divgrid.js"></script>
+        <style>
+    /*@import url(style.css);*/
+    #circle circle {
+    fill: none;
+    pointer-events: all;
+    }
+    .group path {
+    fill-opacity: .5;
+    }
+    path.chord {
+    stroke: #000;
+    stroke-width: .25px;
+    }
+    path.fade {
+    display: none;
+    }
+    .d3-tip {
+      line-height: 1;
+      font-weight: bold;
+      padding: 18px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      border-radius: 2px;
+    }
+
+    /* Creates a small triangle extender for the tooltip */
+    .d3-tip:after {
+      box-sizing: border-box;
+      display: inline;
+      font-size: 10px;
+      width: 100%;
+      line-height: 1;
+      color: rgba(0, 0, 0, 0.8);
+      content: "\25BC";
+      /*position: absolute;*/
+      text-align: center;
+    }
+
+    /* Style northward tooltips differently */
+    .d3-tip.n:after {
+      margin: -1px 0 0 0;
+      top: 100%;
+      left: 0;
+    }
+    body{
+        text-align:center;
+    }
+
+    .parent{
+        margin: 0 auto;
+    }
+    .block:before {
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+        margin-right: -0.25em; /* Adjusts for spacing */
+    }
+    .country_path{
+        fill: none;
+        stroke: #a9a9a9;
+        stroke-width: 1;
+    }
+    .country_path:hover{
+        fill-opacity:0.5;
+        stroke-width:3;
+    }
+    #cord:hover{
+        fill-opacity:0.9;
+        stroke-width:3;
+    }
+    #mapsvg{
+        font: 15px sans-serif;
+    }
+    #parallelsvg{
+        font: 10px sans-serif;
+    }
+    #tooltip {
+        position: absolute;
+        text-align: center;
+        padding: 20px;
+        margin: 10px;
+        font: 12px sans-serif;
+        background: lightsteelblue;
+        border: 1px;
+        border-radius: 2px;
+        pointer-events: none;
+        z-index:99999999；
+    }
+    #tooltip h4{
+        margin:0;
+        font-size:14px;
+    }
+    #tooltip{
+        background:rgba(0,0,0,0.9);
+        border:1px solid grey;
+        border-radius:5px;
+        font-size:12px;
+        width:auto;
+        padding:4px;
+        color:white;
+        opacity:0;
+    }
+    #tooltip table{
+        table-layout:fixed;
+    }
+    #tooltip tr td{
+        padding:0;
+        margin:0;
+    }
+    #tooltip tr td:nth-child(1){
+        width:50px;
+    }
+    #tooltip tr td:nth-child(2){
+        text-align:center;
+    }
+
+    #button60{
+        position: absolute;
+        top:270px;
+    }
+    #button70{
+        position: absolute;
+        top:320px;
+    }
+    #button80{
+        position: absolute;
+        top:370px;
+    }
+    #button90{
+        position: absolute;
+        top:420px;
+    }
+    #button00{
+        position: absolute;
+        top:470px;
+    }
+    .button {
+        display: inline-block;
+        border-radius: 4px;
+        background-color: #f4511e;
+        border: none;
+        color: #FFFFFF;
+        text-align: center;
+        font-size: 20px;
+        padding: 10px;
+        width: 95px;
+        height: 40px;
+        transition: all 0.5s;
+        cursor: pointer;
+        margin: 5px;
+    }
+    .button span {
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        transition: 0.5s;
+    }
+    .button span:after {
+        content: '\00bb';
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: -20px;
+        transition: 0.5s;
+    }
+    .button:hover span {
+        padding-right: 25px;
+    }
+    .button:hover span:after {
+        opacity: 1;
+        right: 0;
+    }
+    .foreground path {
+        fill: none;
+        pointer-events: none;
+        stroke-width: 1.5px;
+    }
+    .axis .title {
+        font-size: 13px;
+        font-weight: bold;
+        text-transform: uppercase;
+        transform: rotate(-12deg) translate(-5px,-6px);
+    }
+    .axis line,
+    .axis path {
+        fill: none;
+        stroke: #000;
+        stroke-width: 1px;
+    }
+    .brush .extent {
+        fill-opacity: .3;
+        stroke: #fff;
+        stroke-width: 1px;
+    }
+
+    pre {
+        width: 800px;
+        height: 100px;
+        margin: 10px 30px;
+        tab-size: 12;
+        font-size: 15px;
+        overflow: auto;
+    }
+    #searchdiv{
+        width: 40%;
+        margin: 0 auto;
+    }
+
+    .div-inlin{
+      font-size: 20px;
+      fill: red;
+      position: 60;
+      width: 280px;
+      }
+    .div-inline{ display:inline}
+    </style>
+
+    
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+<!-- This is for the web title -->
+    <title>Worldwide Human Migration Visualization</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+    <!-- Plugin CSS -->
+    <link href="vendor/magnific-popup/magnific-popup.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="css/creative.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    </head>
+
+<!-- This is for the Header -->
+    <body id="page-top">
+
+        <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                    </button>
+                    <!-- Navbar title -->
+                    <a class="navbar-brand page-scroll" href="#page-top">A CS573 PROJECT</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a class="page-scroll" href="#v1">Map</a>
+                        </li>
+                        <li>
+                            <a class="page-scroll" href="#v2">Chord</a>
+                        </li>
+                        <li>
+                            <a class="page-scroll" href="#v3">Parallel</a>
+                        </li>
+                        <li>
+                            <a class="page-scroll" href="#video">Demo</a>
+                        </li>
+                        <li>
+                            <a class="page-scroll" href="#download">Download</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+
+        <header>
+            <div class="header-content">
+                <div class="header-content-inner">
+                    <h1 id="homeHeading" style="color:#000000">Worldwide Human Migration Visualization</h1>
+                    <hr>
+                    <p style="color:#000000">We are all international students who decided to move to another country to study. Therefore, we are curious about what stimulates people to live in another country. The war? The population density? Alternatively, any other reasons.</p>
+                    <a href="#intro1" class="btn btn-primary btn-xl page-scroll">Find Out More</a>
+                </div>
+            </div>
+        </header>
+
+<!-- This is for the Intro1 -->
+        <section class="bg-primary" id="intro1">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 text-center">
+                        <h2 class="section-heading">We've got what you need!</h2>
+                        <hr class="light">
+                        <p class="text-faded">Start Bootstrap has everything you need to get your new website up and running in no time! All of the templates and themes on Start Bootstrap are open source, free to download, and easy to use. No strings attached!</p>
+                        <a href="#v1" class="page-scroll btn btn-default btn-xl sr-button">Get Started!</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<!-- This is for the Map visualization -->
+    <section id="v1">
+    <body>
+    <div class = "parent">
+    <div class = "child1" id = 'worldmap' align="center" style = "position: relative; height: 1000px">
+        <button class="button" id = 'button60' onclick="yearchange(1960)"><span>1960</span></button>
+        <button class="button" id = 'button70' onclick="yearchange(1970)"><span>1970</span></button>
+        <button class="button" id = 'button80' onclick="yearchange(1980)"><span>1980</span></button>
+        <button class="button" id = 'button90' onclick="yearchange(1990)"><span>1990</span></button>
+        <button class="button" id = 'button00' onclick="yearchange(2000)"><span>2000</span></button>
+    </div>
+    <div class = 'child2' id = 'textmap' align="center" style="height: 200px"></div>
+ 
+    <div class = div id = "tooltip"></div>
+    </div>
+    </body>
+    <script type="text/javascript">
+    <!-- Draw map-->
+	var dispatch1 = d3.dispatch('load'); 
+    var balan_max = 0;
+    var balan_min = 0;
+    var yearchoose = 2000; 
+    var jsonData = undefined;
+
+    d3.json("data/data.json", function(error, data){
+        //console.log(data);
+    	if (error) throw error;
+    	jsonData = data;
+    	dispatch1.load(data);
+
+    });
+
+    function processmapdata(data){
+		var map_pop = {},
+    		map_out = {},
+    		map_in = {};
+    	//console.log(data[0].Country)
+    	for(var i=0; i<data.length; i++){
+    		var key = data[i].CountryCode,
+    			key2 = data[i].CountrytoCode;
+    		if (data[i].Year == yearchoose){
+    			if (!map_pop.hasOwnProperty(key)) {
+    				map_pop[key] = data[i].Population
+    			};
+    			if (!map_out.hasOwnProperty(key)) {
+    				map_out[key] = data[i].Volume
+    			}
+    			else{
+					map_out[key] += data[i].Volume
+    			};
+    			if (!map_in.hasOwnProperty(key2)) {
+    				map_in[key2] = data[i].Volume
+    			}
+    			else{
+					map_in[key2] += data[i].Volume
+    			};
+    		}
+    	};
+
+    	//console.log(map_pop);
+    	//console.log(map_in);
+    	//console.log(map_out);
+
+    	var mapdata = [];
+    	for(i in map_pop){
+    		for(j in map_out){
+    			for(m in map_in){
+    				if (i ==j && i==m){
+    					var dict = {};
+                        
+    					dict['CountryCode'] = i;
+    					dict['Population'] = map_pop[i];
+    					dict['Moveout'] = map_out[i];
+    					dict['Movein'] = map_in[i];
+                        balance = map_in[i]-map_out[i];
+                        if (balance < balan_min){
+                            balan_min = balance;
+                        }
+                        if(balance > balan_max){
+                            balan_max = balance;
+                        }
+                        dict['Balance'] = map_in[i]-map_out[i];
+    					mapdata.push(dict);
+    				}else{
+    					continue;
+    				}
+    			}
+    		}
+    	}
+        //console.log(-100<-90);
+    	//console.log(mapdata);
+        //console.log(balan_min);
+        //console.log(balan_max);
+    	return mapdata;
+
+    };
+
+	function maptoolTip(d){
+    	for (i in mapdata){
+        	if(d.id == mapdata[i].CountryCode){
+            	return "<h4>"+d.properties.name+"</h4><table>"+
+                "<tr><td>Population</td><td>"+(mapdata[i].Population)+"</td></tr>"+
+                "<tr><td>Movein</td><td>"+(mapdata[i].Movein)+"</td></tr>"+
+                "<tr><td>Moveout</td><td>"+(mapdata[i].Moveout)+"</td></tr>"+
+                "<tr><td>Balance</td><td>"+(mapdata[i].Balance)+"</td></tr>"+
+                "</table>"; 
+        	}
+    	}
+	};
+	function mouseOvermap(d){
+        d3.select("#tooltip").transition().duration(200).style("opacity", .9);              
+        d3.select("#tooltip").html(maptoolTip(d))  
+        .style("left", (d3.event.pageX) + "px")     
+        .style("top", (d3.event.pageY - 28) + "px");
+	};
+
+	function mouseOutmap(){
+        d3.select("#tooltip").transition().duration(500).style("opacity", 0);
+	};
+	function drawmap(data){
+        var height = 600;
+        var width = 1000;    
+        var projection = d3.geo.mercator()
+            .scale([140])
+            .translate([width / 2, height/1.4 ]);
+        var path = d3.geo.path()
+            .projection(projection);
+		var svgMap = d3.select("#worldmap").append('svg')
+            .attr("height", height).attr("width", width)
+            .attr("id", "mapsvg");
+		var pop_max = 0;
+    	var pop_min = Infinity;
+    	mapdata = processmapdata(data);
+    	for (var i= 0 ; i< mapdata.length; i++){
+    		//console.log(mapdata[i].Population);
+    		if(mapdata[i].Population< pop_min){ pop_min = mapdata[i].Population};
+    		if(mapdata[i].Population> pop_max){ pop_max = mapdata[i].Population};
+    	};	
+    	//console.log(balan_min)
+    	//console.log(balan_max)
+        var color_lst = [-10000000, -5000000, -2000000,-1000000, 0, 100000, 5000000, 10000000, 35000000];
+        //console.log(d3.extent(color_lst));
+    	var color = d3.scale.linear().domain(color_lst).range(d3.schemeRdYlBu[9]);
+        //console.log(color(-10000000));
+        //console.log(color(35000000));
+    	//console.log(color(120000000))
+    	var legend = svgMap.selectAll("g.legend")
+    				.data(color_lst)
+    				.enter().append("g").attr("class", "maplegend")
+        var legend_width = 25;
+    	legend.append("rect").attr("x", function(d,i){return 5 + i*legend_width;})
+    	.attr("y", height-70)
+    	.attr("width", legend_width)
+    	.attr("height", 10)
+    	.style("fill", function(d,i){ return color(d)})
+
+    	legend.append("text")
+  		.attr("x", function(d, i){ return 8 + i*legend_width;})
+  		.attr("y", height-50)
+  		.data(['-10M','-5M','-2M','-1M','0','0.1M','5M','10M','35M'])
+  		.text(function(d){ return d; })
+        .style("font-size", 10);
+
+    	d3.json("data/countries.geo.json", function(error, pathdata){
+    		if(error) throw error;
+    		svgMap.selectAll("path")
+    		.data(pathdata.features)
+    		.enter()
+    		.append("path").attr("class","country_path")
+    		.attr("d",path)
+    		.style("fill",function(d){
+    			for(i in mapdata){
+    				if(d.id == mapdata[i].CountryCode){
+
+    					return color(mapdata[i].Balance);
+    				}
+    			}
+    		})
+    		.on("mouseover", mouseOvermap).on("mouseout", mouseOutmap);
+    		//console.log(pathdata.features[0].properties.name);
+    		//console.log(map_pop);
+    	})
+	}
+	
+
+	dispatch1.on("load.map", function(data){
+    	drawmap(data);
+    });
+    function yearchange(year){
+    		yearchoose = year;
+    		d3.select('#mapsvg').remove();
+    		drawmap(jsonData);
+    }
+
+    </script>
+    </section>
+
+        <aside class="bg-dark">
+            <div class="container text-center">
+                <div class="call-to-action">
+                    <h2>For the Map </h2>
+                    <a href="http://startbootstrap.com/template-overviews/creative/" class="btn btn-default btn-xl sr-button">Next</a>
+                </div>
+            </div>
+        </aside>
+
+<!-- This is for the Intro2 -->
+        <section class="bg-primary" id="intro2">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 text-center">
+                        <h2 class="section-heading">We've got what you need!</h2>
+                        <hr class="light">
+                        <p class="text-faded">Start Bootstrap has everything you need to get your new website up and running in no time! All of the templates and themes on Start Bootstrap are open source, free to download, and easy to use. No strings attached!</p>
+                        <a href="#v2" class="page-scroll btn btn-default btn-xl sr-button">Get Started!</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<!-- This is for the Chord visualization -->
+    <section id="v2">
+    <body>
+    <aside><font color="red">Human Migration Chord</font></aside>
+    <div class="div-inline" id = 'chordChart'  style="height: 600px"></div>
+    <script>
+        var dispatch = d3.dispatch("load", "yearchange");
+
+        var chord60,chord70,chord80,chord90,chord00;
+        var cities = {};
+        var groupPath1,groupPath2,groupPath3,groupPath4,groupPath5
+        var group1,group2,group3,group4,group5
+        //dispatch.on("load.chord", function(yearById) {
+        var width = 350,
+        height = 350,
+        outerRadius = Math.min(width, height) / 2 - 10,
+        innerRadius = outerRadius - 24;
+
+        var formatPercent = d3.format(".1%");
+        var arc = d3.svg.arc()
+        .innerRadius(innerRadius)
+        .outerRadius(outerRadius);
+
+        var layout1 = d3.layout.chord()
+        .padding(.04)
+        .sortSubgroups(d3.descending)
+        .sortChords(d3.ascending);
+        var layout2 = d3.layout.chord()
+        .padding(.04)
+        .sortSubgroups(d3.descending)
+        .sortChords(d3.ascending);
+        var layout3 = d3.layout.chord()
+        .padding(.04)
+        .sortSubgroups(d3.descending)
+        .sortChords(d3.ascending);
+        var layout4 = d3.layout.chord()
+        .padding(.04)
+        .sortSubgroups(d3.descending)
+        .sortChords(d3.ascending);
+        var layout5 = d3.layout.chord()
+        .padding(.04)
+        .sortSubgroups(d3.descending)
+        .sortChords(d3.ascending);
+
+
+        show("2000")
+
+        function show(data) {
+        var yr = data
+
+        var path1 = d3.svg.chord()
+        .radius(innerRadius);
+        var svg1 = d3.select("body").select('#chordChart').append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("id", "circle")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        var path2 = d3.svg.chord()
+        .radius(innerRadius);
+        var svg2 = d3.select("body").select('#chordChart').append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("id", "circle")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        var path3 = d3.svg.chord()
+        .radius(innerRadius);
+        var svg3 = d3.select("body").select('#chordChart').append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("id", "circle")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        var path4 = d3.svg.chord()
+        .radius(innerRadius);
+        var svg4 = d3.select("body").select('#chordChart').append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("id", "circle")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        var path5 = d3.svg.chord()
+        .radius(innerRadius);
+        var svg5 = d3.select("body").select('#chordChart').append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("id", "circle")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        svg1.append("circle")
+        .attr("r", outerRadius);
+        svg2.append("circle")
+        .attr("r", outerRadius);
+        svg3.append("circle")
+        .attr("r", outerRadius);
+        svg4.append("circle")
+        .attr("r", outerRadius);
+        svg5.append("circle")
+        .attr("r", outerRadius);
+
+        d3.csv("data/country_"+yr.substring(2,4)+".csv", function(citi) {
+          cities = citi
+        })
+
+        function test(callback){
+        d3.json("data/matrix_"+"60"+".json", function(matrix1) {
+          d3.json("data/matrix_"+"70"+".json", function(matrix2) {
+            d3.json("data/matrix_"+"80"+".json", function(matrix3) {
+              d3.json("data/matrix_"+"90"+".json", function(matrix4) {
+                d3.json("data/matrix_"+"00"+".json", function(matrix5) {
+                  callback(matrix1,matrix2,matrix3,matrix4,matrix5);
+                })
+              })
+             })
+            })
+          })
+        }
+        //  layout.matrix(matrix);
+        function chordtoolTip(d,i){
+                    return "<h4>"+"</h4><table>"+
+                      "<span style='color:red'>" + cities[i].name + "</span>"+
+                      "<tr><td>Movein:</td><td>"+(cities[i].Inflow)+"</td></tr>"+
+                      "<tr><td>Moveout:</td><td>"+(cities[i].Outflow)+"</td></tr>"+
+                      "<tr><td>NetFlow:</td><td>"+(cities[i].Netflow)+"</td></tr>"+
+                      "</table>";
+        };
+        function mouseOverchord(d,i){
+              d3.select("#tooltip").transition().duration(200).style("opacity", .9);
+              d3.select("#tooltip").html(chordtoolTip(d,i))
+              .style("left", (d3.event.pageX) + "px")
+              .style("top", (d3.event.pageY - 28) + "px");
+        };
+        function mouseOutchord(){
+              d3.select("#tooltip").transition().duration(500).style("opacity", 0);
+        };
+
+        test(function(matrix1,matrix2,matrix3,matrix4,matrix5){
+
+          layout1.matrix(matrix1);
+          layout2.matrix(matrix2);
+          layout3.matrix(matrix3);
+          layout4.matrix(matrix4);
+          layout5.matrix(matrix5);
+        // Add a group per neighborhood.
+        group1 = svg1.selectAll(".group")
+        .data(layout1.groups)
+        .enter().append("g")
+        .attr("class", "group");
+        group2 = svg2.selectAll(".group")
+        .data(layout2.groups)
+        .enter().append("g")
+        .attr("class", "group");
+        group3 = svg3.selectAll(".group")
+        .data(layout3.groups)
+        .enter().append("g")
+        .attr("class", "group");
+        group4 = svg4.selectAll(".group")
+        .data(layout4.groups)
+        .enter().append("g")
+        .attr("class", "group");
+        group5 = svg5.selectAll(".group")
+        .data(layout5.groups)
+        .enter().append("g")
+        .attr("class", "group");
+        ////五份
+        chord60 = svg1.selectAll(".chord")
+        .data(layout1.chords)
+        .enter().append("path")
+        .attr("class", "chord")
+        .style("fill", function(d) { return cities[d.source.index].color; })
+        .attr("d", path1);
+        chord70 = svg2.selectAll(".chord")
+        .data(layout2.chords)
+        .enter().append("path")
+        .attr("class", "chord")
+        .style("fill", function(d) {return cities[d.source.index].color; })
+        .attr("d", path2);
+        chord80 = svg3.selectAll(".chord")
+        .data(layout3.chords)
+        .enter().append("path")
+        .attr("class", "chord")
+        .style("fill", function(d) { return cities[d.source.index].color; })
+        .attr("d", path3);
+        chord90 = svg4.selectAll(".chord")
+        .data(layout4.chords)
+        .enter().append("path")
+        .attr("class", "chord")
+        .style("fill", function(d) { return cities[d.source.index].color; })
+        .attr("d", path4);
+        chord00 = svg5.selectAll(".chord")
+        .data(layout5.chords)
+        .enter().append("path")
+        .attr("class", "chord")
+        .style("fill", function(d) { return cities[d.source.index].color; })
+        .attr("d", path5);
+        // Add the group arc.
+        ////////////拉出來寫//////////
+
+        groupPath1 = group1.on("mouseover", mouseover).on("mouseout", mouseout)
+        .append("path")
+        .attr("id", function(d, i) { return "group" + i; })
+        .attr("d", arc)
+        .style("fill", function(d, i) { return cities[i].color; })
+        .on('mouseover', mouseOverchord)
+        .on('mouseout',  mouseOutchord);
+        groupPath2 = group2.on("mouseover", mouseover).on("mouseout", mouseout)
+        .append("path")
+        .attr("id", function(d, i) { return "group" + i; })
+        .attr("d", arc)
+        .style("fill", function(d, i) { return cities[i].color; })
+        .on('mouseover', mouseOverchord)
+        .on('mouseout',  mouseOutchord);
+        groupPath3 = group3.on("mouseover", mouseover).on("mouseout", mouseout)
+        .append("path")
+        .attr("id", function(d, i) { return "group" + i; })
+        .attr("d", arc)
+        .style("fill", function(d, i) { return cities[i].color; })
+        .on('mouseover', mouseOverchord)
+        .on('mouseout',  mouseOutchord);
+        groupPath4 = group4.on("mouseover", mouseover).on("mouseout", mouseout)
+        .append("path")
+        .attr("id", function(d, i) { return "group" + i; })
+        .attr("d", arc)
+        .style("fill", function(d, i) { return cities[i].color; })
+        .on('mouseover', mouseOverchord)
+        .on('mouseout',  mouseOutchord);
+        groupPath5 = group5.on("mouseover", mouseover).on("mouseout", mouseout)
+        .append("path")
+        .attr("id", function(d, i) { return "group" + i; })
+        .attr("d", arc)
+        .style("fill", function(d, i) { return cities[i].color; })
+        .on('mouseover', mouseOverchord)
+        .on('mouseout',  mouseOutchord);
+        // Add a text label.
+        /*var groupText = group.append("text")
+        .attr("x", 6)
+        .attr("dy", 15);
+
+        groupText.append("textPath")
+        .attr("xlink:href", function(d, i) { return "#group" + i; })
+        .text(function(d, i) { return cities[i].name; });
+        // Remove the labels that don't fit. :(
+        groupText.filter(function(d, i) { return groupPath[0][i].getTotalLength() / 2 - 16 < this.getComputedTextLength(); })
+        .remove();*/
+
+        // Add an elaborate mouseover title for each chord.
+         chord60.append("title").text(function(d) {
+         return cities[d.source.index].name
+         + " → " + cities[d.target.index].name
+         + ": " + d.source.value
+         + "\n" + cities[d.target.index].name
+         + " → " + cities[d.source.index].name
+         + ": " + d.target.value;
+         });
+         chord70.append("title").text(function(d) {
+         return cities[d.source.index].name
+         + " → " + cities[d.target.index].name
+         + ": " + d.source.value
+         + "\n" + cities[d.target.index].name
+         + " → " + cities[d.source.index].name
+         + ": " + d.target.value;
+         });
+         chord80.append("title").text(function(d) {
+         return cities[d.source.index].name
+         + " → " + cities[d.target.index].name
+         + ": " + d.source.value
+         + "\n" + cities[d.target.index].name
+         + " → " + cities[d.source.index].name
+         + ": " + d.target.value;
+         });
+         chord90.append("title").text(function(d) {
+         return cities[d.source.index].name
+         + " → " + cities[d.target.index].name
+         + ": " + d.source.value
+         + "\n" + cities[d.target.index].name
+         + " → " + cities[d.source.index].name
+         + ": " + d.target.value;
+         });
+         chord00.append("title").text(function(d) {
+         return cities[d.source.index].name
+         + " → " + cities[d.target.index].name
+         + ": " + d.source.value
+         + "\n" + cities[d.target.index].name
+         + " → " + cities[d.source.index].name
+         + ": " + d.target.value;
+         });
+
+        function mouseover(d, i) {
+          chord60.classed("fade", function(p) {
+          return p.source.index != i
+          && p.target.index != i;
+          });
+          chord70.classed("fade", function(p) {
+          return p.source.index != i
+          && p.target.index != i;
+          });
+          chord80.classed("fade", function(p) {
+          return p.source.index != i
+          && p.target.index != i;
+          });
+          chord90.classed("fade", function(p) {
+          return p.source.index != i
+          && p.target.index != i;
+          });
+          chord00.classed("fade", function(p) {
+          return p.source.index != i
+          && p.target.index != i;
+          });
+        }
+
+        function mouseout(d, i) {
+          chord60.classed("fade", function(p) {
+          return null;
+          });
+          chord70.classed("fade", function(p) {
+          return null;
+          });
+          chord80.classed("fade", function(p) {
+          return null;
+          });
+          chord90.classed("fade", function(p) {
+          return null;
+          });
+          chord00.classed("fade", function(p) {
+          return null;
+          });
+        }
+
+        });//Call back
+        //});// d3.csv
+        //});// d3.csv
+
+        }; // show()
+
+    </script>
+
+    </body>
+    </section>
+
+        <aside class="bg-dark">
+            <div class="container text-center">
+                <div class="call-to-action">
+                    <h2>For the Map </h2>
+                    <a href="http://startbootstrap.com/template-overviews/creative/" class="btn btn-default btn-xl sr-button">Next</a>
+                </div>
+            </div>
+        </aside>
+
+<!-- This is for the Intro3 -->
+        <section class="bg-primary" id="intro3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 text-center">
+                        <h2 class="section-heading">We've got what you need!</h2>
+                        <hr class="light">
+                        <p class="text-faded">Start Bootstrap has everything you need to get your new website up and running in no time! All of the templates and themes on Start Bootstrap are open source, free to download, and easy to use. No strings attached!</p>
+                        <a href="#v3" class="page-scroll btn btn-default btn-xl sr-button">Get Started!</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<!-- This is for the Parallel Coordinate visualization -->
+    <section id="v3">
+    <body>
+ <!--    <div class = 'child3' id = 'parallel' align="center" style="height: 600px">
+    </div> -->
+   <div class = 'child3'  style="height: 700px">
+        <div id = 'parallel' align="center"></div>
+        <div id = 'searchdiv' align="center">
+                <input type="text" list = 'country_list' id="searchbox" placeholder="Search countries..." ></input>
+                <datalist id = 'country_list'></datalist>
+                <button id='Add' type="button" value="Add" onclick="showline()">Show</button>
+
+            </div>   
+        </div>
+    </body>
+    <script type="text/javascript">
+    <!--Draw parallel coordinates-->
+    var dispatch2 = d3.dispatch('load');
+    var csvData = undefined;
+    var show_country_list = [];
+    
+    d3.csv('data/parallel_new.csv', function (error, data) {
+        if (error) throw error;
+        // initial load for all of the maps
+        dispatch2.load(data);
+        csvData = data;
+        //console.log(data);
+    });
+    
+    dispatch2.on("load.parallel", function(data){
+    	drawparallel(data);
+    });
+    function getcountry(data){
+        var country_list = [];
+        for (i in data){
+            country_list.push(data[i].Country);
+        }
+        return country_list;
+
+    }
+    function showline(){
+        var input_country = document.getElementById('searchbox').value;
+        show_country_list.push(input_country);
+        d3.select("#parallelsvg").remove();
+        d3.select("pre").remove();
+        d3.select('option').remove();
+        console.log(show_country_list);
+        drawparallel(csvData);
+        d3.select("pre").remove();
+        selected = [];
+        var output = d3.select("#parallel").append("pre");
+        d3.selectAll(".foreground path").style("display", function(d) {
+            //console.log(d);
+            for (i in show_country_list){
+                if(d.Country == show_country_list[i]){
+                selected.push(d);
+                return true;
+                }
+            }
+            return "none";
+        });
+        output.text(d3.tsv.format(selected));
+
+
+    };
+    function para_reset(){
+        var show_country_list = [];
+        d3.select("#parallelsvg").remove();
+        d3.select("pre").remove();
+        d3.select('option').remove();
+        drawparallel(csvData);
+    };
+    function inputdatalist(country_list){
+        webshim.setOptions('forms', {
+          customDatalist: true
+        });
+        webshim.setOptions('forms-ext', {
+          replaceUI: true 
+        });
+        webshim.polyfill('forms forms-ext');
+        //Reference: https://mflevine.github.io/PokeVis/index.html
+        d3.select('#country_list').append('select').selectAll('option').data(country_list.sort(
+            function(a,b){
+               var nameA=a.toLowerCase(), nameB=b.toLowerCase();
+               if (nameA < nameB) //sort string ascending
+                return -1;
+               if (nameA > nameB)
+                return 1;
+               return 0; //default return value (no sorting)
+            }))
+        .enter()
+        .append('option')
+        .attr('val', function(d){return d;})
+        .text(function(d){ return d});
+    }
+    function drawparallel(data){
+        //console.log(data);
+        var country_list = getcountry(data);
+        inputdatalist(country_list);
+        //console.log(country_list);
+    	var margin = {top: 60, right: 10, bottom: 10, left: 70};
+        var para_height = 300;
+        var para_width = 800;
+		var x = d3.scale.ordinal().rangePoints([30, para_width-margin.left], 1),
+    		y = {},
+    		dragging = {};
+
+		var line = d3.svg.line(),
+    		axis = d3.svg.axis().orient("left"),
+    		background,
+    		foreground;
+
+		var svgpara = d3.select("#parallel").append("svg").attr('id','parallelsvg')
+    		.attr("width", para_width+ margin.left + margin.right)
+    		.attr("height", para_height+ margin.top + margin.bottom)
+  			.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var output = d3.select("#parallel").append("pre");
+        var types = {
+                "Number": {
+                    key: "Number",
+                    coerce: function(d) { return +d; },
+                    extent: d3.extent,
+                    within: function(d, extent) { return extent[0] <= d && d <= extent[1]; },
+                    defaultScale: d3.scale.linear().range([para_height, 0])
+                },
+                "String": {
+                    key: "String",
+                    coerce: String,
+                    extent: function (data) { return data.sort(); },
+                    within: function(d, extent, dim) { return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1]; },
+                    defaultScale: d3.scale.ordinal().rangePoints([0, para_height])
+                }
+            };
+        var dimensions = [
+
+                {
+                    name: "Develop",
+                    scale: d3.scale.ordinal().rangePoints([0, para_height-0]),
+                    type: types["String"],
+                    domain: ['', "Developing", "Developed", ' ']
+                },
+
+                {
+                    name: "1960",
+                    scale: d3.scale.linear().range([para_height, 0]),
+                    type: types["Number"]
+                },
+                {
+                    name: "1970",
+                    scale: d3.scale.linear().range([para_height, 0]),
+                    type: types["Number"]
+                },
+                {
+                    name: "1980",
+                    scale: d3.scale.linear().range([para_height, 0]),
+                    type: types["Number"]
+                },
+                {
+                    name: "1990",
+                    scale: d3.scale.linear().range([para_height, 0]),
+                    type: types["Number"]
+                },
+                {
+                    name: "2000",
+                    scale: d3.scale.linear().range([para_height, 0]),
+                    type: types["Number"]
+                },
+                {
+                    name: "Total",
+                    scale: d3.scale.linear().range([para_height, 0]),
+                    type: types["Number"]
+                }
+            ];
+        var color = d3.scale.ordinal().range(["#d73027","#4575b4"]);
+        var x = d3.scale.ordinal()
+                .domain(dimensions.map(function(dim) {
+                     //console.log(dim); 
+                     return dim.name; 
+                }))
+                .rangePoints([0, para_width-margin.left]);
+        var line = d3.svg.line().defined(function(d) { 
+                    //console.log(d);
+                    return !isNaN(d[1]); 
+                });
+        var yAxis = d3.svg.axis().orient("left");
+        var dimension = svgpara.selectAll(".dimension")
+                .data(dimensions)
+                .enter().append("g")
+                .attr("class", "dimension")
+                .attr("transform", function(d) {
+                    //console.log(d.name); 
+                    return "translate(" + x(d.name) + ")"; 
+                });
+        //console.log(dimensions);
+        var colordimension = dimensions[0];
+        //console.log(data);
+        data.forEach(function(d) {
+            dimensions.forEach(function(p) {
+
+                if (p.name in d){
+                    //console.log(p.name);
+                    d[p.name] = p.type.coerce(d[p.name]);
+                };
+            });
+        });
+
+        dimensions.forEach(function(dim) {
+            //console.log(dim.domain);
+            if (!("domain" in dim)) {
+                dim.domain  = d3.functor(dim.type.extent)(data.map(function(d) { return d[dim.name]; }));
+            }
+            dim.scale.domain(dim.domain);
+        });
+        color.domain(colordimension.scale.domain());
+        //console.log(colordimension.name);
+        //console.log(data);
+        svgpara.append("g")
+            .attr("class", "foreground")
+            .selectAll("path")
+            .data(data)
+            .enter().append("path")
+            .attr('class','cord')
+            .attr("d", draw)
+            .style("stroke", function(d,i) {console.log(i);return color(d[colordimension.name]); })
+            .style('opacity', 0.38)
+            .on("mouseover", function(d,i){
+                svgpara.selectAll('.cord').transition().duration(250)
+                .style("stroke-width",function(d,j){ return j!=i? 1.5:3})
+                .style("opacity",function(d,j){ return j!=i? 0.2:1})
+            })
+            .on("mouseout", function(d,i){
+                svgpara.selectAll('.cord').transition().duration(250).attr("opacity", 0.38);
+            });
+
+        dimension.append("g")
+            .attr("class", "axis")
+            .each(function(d) { d3.select(this).call(yAxis.scale(d.scale)); })
+            .append("text")
+            .attr("class", "title")
+            .attr("text-anchor", "middle")
+            .attr("y", -9)
+            .text(function(d) { return d.name; });
+        dimension.append("g")
+            .attr("class", "brush")
+            .each(function(d) {
+                d3.select(this).call(d.brush = d3.svg.brush()
+                    .y(d.scale)
+                    .on("brushstart", brushstart)
+                    .on("brush", brush));
+            })
+            .selectAll("rect")
+            .attr("x", -8)
+            .attr("width", 16);
+
+        output.text(d3.tsv.format(data));
+
+        function draw(d) {
+            return line(dimensions.map(function(dim) {
+                return [x(dim.name), dim.scale(d[dim.name])];
+            }));
+        }; 	
+    function brushstart() {
+        d3.event.sourceEvent.stopPropagation();
+    };
+
+    // Handles a brush event, toggling the display of foreground lines.
+    function brush() {
+        var actives = dimensions.filter(function(p) { return !p.brush.empty(); }),
+            extents = actives.map(function(p) { return p.brush.extent(); });
+
+        var selected = [];
+
+        d3.selectAll(".foreground path").style("display", function(d) {
+          if (actives.every(function(dim, i) {
+              // test if point is within extents for each active brush
+              return dim.type.within(d[dim.name], extents[i], dim);
+            })) {
+            selected.push(d);
+            return null;
+          }
+          return "none";
+        });
+
+        output.text(d3.tsv.format(selected));
+    };
+    };
+
+
+
+    </script>
+
+        <aside class="bg-dark">
+            <div class="container text-center">
+                <div class="call-to-action">
+                    <h2>For the Parallel Coordinate </h2>
+                    <a href="http://startbootstrap.com/template-overviews/creative/" class="btn btn-default btn-xl sr-button">Next</a>
+                </div>
+            </div>
+        </aside>
+
+    </section>
+
+<!-- This is for the video show -->
+       <section class="bg-primary" id="video">
+       <div class="responsive-video"><iframe width="853" height="480" src="https://www.youtube.com/embed/NBi2njb8M4o" frameborder="0" allowfullscreen></iframe></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 text-center">
+                        <h2 class="section-heading">We've got what you need!</h2>
+                        <hr class="light">
+                        <p class="text-faded">Start Bootstrap has everything you need to get your new website up and running in no time! All of the templates and themes on Start Bootstrap are open source, free to download, and easy to use. No strings attached!</p>
+                        <a href="#v3" class="page-scroll btn btn-default btn-xl sr-button">Get Started!</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<!-- This is for the Team Introduction -->
+        <section class="bg-primary" id="download">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">Our Team</h2>
+                    <p>This project is designed and developed for the final project of CS573 Data Visualization (Fall 2015) at Worcester Polytechnic Institute by:</p>
+            <!--   <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Our Team</h2>
+                    <h3 class="section-subheading text-muted">This project is designed and developed for the final project of CS573 Data Visualization (Fall 2015) at Worcester Polytechnic Institute by:</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="team-member">
+                        <img src="https://ww3.sinaimg.cn/large/006tNc79gy1fd6zgapzoij308c08ct8r.jpg" class="img-responsive img-circle" alt="">
+                        <h4>Yanpu Li</h4>
+                        <p class="text-muted">Data Science '16 - WPI</p>
+                        <ul class="list-inline social-buttons">
+                            <li><a href="https://github.com/YanpuLi" target="_blank"><i class="fa fa-github"></i></a>
+                            </li>
+                            <li><a href="https://www.facebook.com/profile.php?id=100008602692477" target="_blank"><i class="fa fa-facebook"></i></a>
+                            </li>
+                            <li><a href="https://www.linkedin.com/in/yanpu-li-4b3923b0" target="_blank"><i class="fa fa-linkedin"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="team-member">
+                        <img src="https://ww3.sinaimg.cn/large/006tNc79gy1fd6zgapzoij308c08ct8r.jpg" class="img-responsive img-circle" alt="">
+                        <h4>Azharuddin Priyotomo</h4>
+                        <p class="text-muted">Data Science '16 - WPI</p>
+                        <ul class="list-inline social-buttons">
+                            <li><a href="https://github.com/apriyotomo/" target="_blank"><i class="fa fa-github"></i></a>
+                            </li>
+                            <li><a href="https://www.facebook.com/azharuddinp" target="_blank"><i class="fa fa-facebook"></i></a>
+                            </li>
+                            <li><a href="https://id.linkedin.com/in/azharuddinpriyotomo" target="_blank"><i class="fa fa-linkedin"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="team-member">
+                        <img src="https://ww3.sinaimg.cn/large/006tNc79gy1fd6zgapzoij308c08ct8r.jpg" class="img-responsive img-circle" alt="">
+                        <h4>Huan Ye</h4>
+                        <p class="text-muted">Data Science '16 - WPI</p>
+                        <ul class="list-inline social-buttons">
+                            <li><a href="https://github.com/Leaf27" target="_blank"><i class="fa fa-github"></i></a>
+                            </li>
+                            <li><a href="https://www.facebook.com/profile.php?id=100008543286687" target="_blank"><i class="fa fa-facebook"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+                        <a href="https://docs.google.com/presentation/d/1ICi_AsZ1qAx1BfmrCsQfk0uJJf6iHElHOVIeQLm8wvA/edit?usp=sharing" class="page-scroll btn btn-default btn-xl sr-button"> <i class="fa fa-download"></i> Download ProcessBook</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+<!-- Other Javascripts -->
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+    <script src="vendor/scrollreveal/scrollreveal.min.js"></script>
+    <script src="vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="js/creative.min.js"></script>
+
+</html>
+ 

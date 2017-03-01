@@ -10,7 +10,6 @@
         <script src="http://d3js.org/d3-interpolate.v1.min.js"></script>
         <script src="http://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 		<script src="https://afarkas.github.io/webshim/js-webshim/minified/polyfiller.js"></script>
-	    <script src="divgrid.js"></script>
         <style>
     /*@import url(style.css);*/
     #circle circle {
@@ -130,23 +129,23 @@
 
     #button60{
         position: absolute;
-        top:270px;
+        top:225px;
     }
     #button70{
         position: absolute;
-        top:320px;
+        top:270px;
     }
     #button80{
         position: absolute;
-        top:370px;
+        top:315px;
     }
     #button90{
         position: absolute;
-        top:420px;
+        top:360px;
     }
     #button00{
         position: absolute;
-        top:470px;
+        top:405px;
     }
     .button {
         display: inline-block;
@@ -273,7 +272,7 @@
                         <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
                     </button>
                     <!-- Navbar title -->
-                    <a class="navbar-brand page-scroll" href="#page-top">A CS573 PROJECT</a>
+                    <a class="navbar-brand page-scroll" href="#page-top">Migration Pattern</a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
@@ -330,15 +329,13 @@
     <section id="v1">
     <body>
     <div class = "parent">
-    <div class = "child1" id = 'worldmap' align="center" style = "position: relative; height: 1000px">
+    <div class = "child1" id = 'worldmap' align="center" style = "position: relative; height: 550px">
         <button class="button" id = 'button60' onclick="yearchange(1960)"><span>1960</span></button>
         <button class="button" id = 'button70' onclick="yearchange(1970)"><span>1970</span></button>
         <button class="button" id = 'button80' onclick="yearchange(1980)"><span>1980</span></button>
         <button class="button" id = 'button90' onclick="yearchange(1990)"><span>1990</span></button>
         <button class="button" id = 'button00' onclick="yearchange(2000)"><span>2000</span></button>
     </div>
-    <div class = 'child2' id = 'textmap' align="center" style="height: 200px"></div>
- 
     <div class = div id = "tooltip"></div>
     </div>
     </body>
@@ -422,15 +419,17 @@
     	return mapdata;
 
     };
-
+    function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 	function maptoolTip(d){
     	for (i in mapdata){
         	if(d.id == mapdata[i].CountryCode){
             	return "<h4>"+d.properties.name+"</h4><table>"+
-                "<tr><td>Population</td><td>"+(mapdata[i].Population)+"</td></tr>"+
-                "<tr><td>Movein</td><td>"+(mapdata[i].Movein)+"</td></tr>"+
-                "<tr><td>Moveout</td><td>"+(mapdata[i].Moveout)+"</td></tr>"+
-                "<tr><td>Balance</td><td>"+(mapdata[i].Balance)+"</td></tr>"+
+                "<tr><td>Population</td><td>"+(numberWithCommas(mapdata[i].Population))+"</td></tr>"+
+                "<tr><td>Movein</td><td>"+(numberWithCommas(mapdata[i].Movein))+"</td></tr>"+
+                "<tr><td>Moveout</td><td>"+(numberWithCommas(mapdata[i].Moveout))+"</td></tr>"+
+                "<tr><td>Balance</td><td>"+(numberWithCommas(mapdata[i].Balance))+"</td></tr>"+
                 "</table>"; 
         	}
     	}
@@ -446,7 +445,7 @@
         d3.select("#tooltip").transition().duration(500).style("opacity", 0);
 	};
 	function drawmap(data){
-        var height = 600;
+        var height = 550;
         var width = 1000;    
         var projection = d3.geo.mercator()
             .scale([140])
@@ -550,7 +549,9 @@
     <section id="v2">
     <body>
     <aside><font color="red">Human Migration Chord</font></aside>
-    <div class="div-inline" id = 'chordChart'  style="height: 600px"></div>
+    <div class="div-inline" id = 'chordChart'  style="height: 600px">
+        
+    </div>
     <script>
         var dispatch = d3.dispatch("load", "yearchange");
 
@@ -669,9 +670,9 @@
         function chordtoolTip(d,i){
                     return "<h4>"+"</h4><table>"+
                       "<span style='color:red'>" + cities[i].name + "</span>"+
-                      "<tr><td>Movein:</td><td>"+(cities[i].Inflow)+"</td></tr>"+
-                      "<tr><td>Moveout:</td><td>"+(cities[i].Outflow)+"</td></tr>"+
-                      "<tr><td>NetFlow:</td><td>"+(cities[i].Netflow)+"</td></tr>"+
+                      "<tr><td>Movein:</td><td>"+(numberWithCommas(cities[i].Inflow))+"</td></tr>"+
+                      "<tr><td>Moveout:</td><td>"+(numberWithCommas(cities[i].Outflow))+"</td></tr>"+
+                      "<tr><td>NetFlow:</td><td>"+(numberWithCommas(cities[i].Netflow))+"</td></tr>"+
                       "</table>";
         };
         function mouseOverchord(d,i){
@@ -917,13 +918,15 @@
     </div> -->
    <div class = 'child3'  style="height: 700px">
         <div id = 'parallel' align="center"></div>
-        <div id = 'searchdiv' align="center">
+            <div id = 'searchdiv' align="center">
                 <input type="text" list = 'country_list' id="searchbox" placeholder="Search countries..." ></input>
                 <datalist id = 'country_list'></datalist>
-                <button id='Add' type="button" value="Add" onclick="showline()">Show</button>
-
-            </div>   
+                <button id='Add' type="button" value="Add" onclick="showline()">Add</button>
+                <button id='Reset' type="button" value="reset" onclick="para_reset()">Reset</button>
+            </div>
+            <p style= 'font: 20px sans-serif'>In this visualization we can see that developed countries usually have positive balances while the majority of developing countries have negative balances</p>
         </div>
+
     </body>
     <script type="text/javascript">
     <!--Draw parallel coordinates-->
