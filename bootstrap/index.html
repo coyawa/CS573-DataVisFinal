@@ -9,7 +9,7 @@
         <script src="http://d3js.org/d3-color.v1.min.js"></script>
         <script src="http://d3js.org/d3-interpolate.v1.min.js"></script>
         <script src="http://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-		<script src="https://afarkas.github.io/webshim/js-webshim/minified/polyfiller.js"></script>
+        <script src="https://afarkas.github.io/webshim/js-webshim/minified/polyfiller.js"></script>
         <style>
     /*@import url(style.css);*/
     #circle circle {
@@ -236,7 +236,7 @@
         <meta name="author" content="">
 
 <!-- This is for the web title -->
-    <title>Worldwide Human Migration Visualization</title>
+    <title>Worldwide Migration Pattern</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -303,10 +303,11 @@
         <header>
             <div class="header-content">
                 <div class="header-content-inner">
-                    <h1 id="homeHeading" style="color:#000000">Worldwide Human Migration Visualization</h1>
+                    <h2 style="color:#000000; font-family: 'Brush Script MT', cursive; font-style: italic;">Data Visualization Final Project</h2>
+                    <h1 id="homeHeading" style="color:#000000; font-style: italic;">Worldwide Migration Pattern</h1>
                     <hr>
-                    <p style="color:#000000">We are all international students who decided to move to another country to study. Therefore, we are curious about what stimulates people to live in another country. The war? The population density? Alternatively, any other reasons.</p>
-                    <a href="#intro1" class="btn btn-primary btn-xl page-scroll">Find Out More</a>
+                    <p style="color:#000000; font-family: Garamond, Baskerville, 'Baskerville Old Face', 'Hoefler Text', 'Times New Roman', serif; font-style: italic; font-size: 25px;">In this project, we aims to explore the migration pattern among the world.<br>Three visualizations as well as our demo video and process book are presented in this website.<br>Enjoy!</p>
+                    <a href="#intro1" class="btn btn-primary btn-xl page-scroll">Start</a>
                 </div>
             </div>
         </header>
@@ -316,9 +317,9 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 text-center">
-                        <h2 class="section-heading">We've got what you need!</h2>
+                        <h2 class="section-heading" style=" font-family: Impact, Haettenschweiler, 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans serif; font-size: 35px;">World Map</h2>
                         <hr class="light">
-                        <p class="text-faded">Start Bootstrap has everything you need to get your new website up and running in no time! All of the templates and themes on Start Bootstrap are open source, free to download, and easy to use. No strings attached!</p>
+                        <p class="text-faded" style="color:#000000; font-family: Garamond, Baskerville, 'Baskerville Old Face', 'Hoefler Text', 'Times New Roman', serif; font-style: italic; font-size: 25px;">The world map aims to convery a general idea for our topic. The blue means the movein volume is higher than moveout volume. The red means the movein volume is lower than moveout volume. The darker color indicates the larger gap between movein and moveout.You can also choose the decades. Use mouse over the country to explore the detail! </p>
                         <a href="#v1" class="page-scroll btn btn-default btn-xl sr-button">Get Started!</a>
                     </div>
                 </div>
@@ -328,20 +329,21 @@
 <!-- This is for the Map visualization -->
     <section id="v1">
     <body>
-    <div class = "parent">
-    <div class = "child1" id = 'worldmap' align="center" style = "position: relative; height: 550px">
-        <button class="button" id = 'button60' onclick="yearchange(1960)"><span>1960</span></button>
-        <button class="button" id = 'button70' onclick="yearchange(1970)"><span>1970</span></button>
-        <button class="button" id = 'button80' onclick="yearchange(1980)"><span>1980</span></button>
-        <button class="button" id = 'button90' onclick="yearchange(1990)"><span>1990</span></button>
-        <button class="button" id = 'button00' onclick="yearchange(2000)"><span>2000</span></button>
-    </div>
-    <div class = div id = "tooltip"></div>
-    </div>
+        <div class = "parent">
+            <div class = "child1" id = 'worldmap' align="center" style = "position: relative; height: 550px">
+                <button class="button" id = 'button60' onclick="yearchange(1960)"><span>1960</span></button>
+                <button class="button" id = 'button70' onclick="yearchange(1970)"><span>1970</span></button>
+                <button class="button" id = 'button80' onclick="yearchange(1980)"><span>1980</span></button>
+                <button class="button" id = 'button90' onclick="yearchange(1990)"><span>1990</span></button>
+                <button class="button" id = 'button00' onclick="yearchange(2000)"><span>2000</span></button>
+            </div>
+            <div class = div id = "tooltip"></div>
+            <p style="color:#000000; font-family: Garamond, Baskerville, 'Baskerville Old Face', 'Hoefler Text', 'Times New Roman', serif; font-style: italic; font-size: 25px;">With the year change we can see the change of the migration pattern(especially Russia and Mexico). As expected, the North America, Oceania and Europe <br>are the main blue area. While the Asia, Africa and North America are the main red area.</p>
+        </div>
     </body>
     <script type="text/javascript">
     <!-- Draw map-->
-	var dispatch1 = d3.dispatch('load'); 
+    var dispatch1 = d3.dispatch('load'); 
     var balan_max = 0;
     var balan_min = 0;
     var yearchoose = 2000; 
@@ -349,54 +351,54 @@
 
     d3.json("data/data.json", function(error, data){
         //console.log(data);
-    	if (error) throw error;
-    	jsonData = data;
-    	dispatch1.load(data);
+        if (error) throw error;
+        jsonData = data;
+        dispatch1.load(data);
 
     });
 
     function processmapdata(data){
-		var map_pop = {},
-    		map_out = {},
-    		map_in = {};
-    	//console.log(data[0].Country)
-    	for(var i=0; i<data.length; i++){
-    		var key = data[i].CountryCode,
-    			key2 = data[i].CountrytoCode;
-    		if (data[i].Year == yearchoose){
-    			if (!map_pop.hasOwnProperty(key)) {
-    				map_pop[key] = data[i].Population
-    			};
-    			if (!map_out.hasOwnProperty(key)) {
-    				map_out[key] = data[i].Volume
-    			}
-    			else{
-					map_out[key] += data[i].Volume
-    			};
-    			if (!map_in.hasOwnProperty(key2)) {
-    				map_in[key2] = data[i].Volume
-    			}
-    			else{
-					map_in[key2] += data[i].Volume
-    			};
-    		}
-    	};
+        var map_pop = {},
+            map_out = {},
+            map_in = {};
+        //console.log(data[0].Country)
+        for(var i=0; i<data.length; i++){
+            var key = data[i].CountryCode,
+                key2 = data[i].CountrytoCode;
+            if (data[i].Year == yearchoose){
+                if (!map_pop.hasOwnProperty(key)) {
+                    map_pop[key] = data[i].Population
+                };
+                if (!map_out.hasOwnProperty(key)) {
+                    map_out[key] = data[i].Volume
+                }
+                else{
+                    map_out[key] += data[i].Volume
+                };
+                if (!map_in.hasOwnProperty(key2)) {
+                    map_in[key2] = data[i].Volume
+                }
+                else{
+                    map_in[key2] += data[i].Volume
+                };
+            }
+        };
 
-    	//console.log(map_pop);
-    	//console.log(map_in);
-    	//console.log(map_out);
+        //console.log(map_pop);
+        //console.log(map_in);
+        //console.log(map_out);
 
-    	var mapdata = [];
-    	for(i in map_pop){
-    		for(j in map_out){
-    			for(m in map_in){
-    				if (i ==j && i==m){
-    					var dict = {};
+        var mapdata = [];
+        for(i in map_pop){
+            for(j in map_out){
+                for(m in map_in){
+                    if (i ==j && i==m){
+                        var dict = {};
                         
-    					dict['CountryCode'] = i;
-    					dict['Population'] = map_pop[i];
-    					dict['Moveout'] = map_out[i];
-    					dict['Movein'] = map_in[i];
+                        dict['CountryCode'] = i;
+                        dict['Population'] = map_pop[i];
+                        dict['Moveout'] = map_out[i];
+                        dict['Movein'] = map_in[i];
                         balance = map_in[i]-map_out[i];
                         if (balance < balan_min){
                             balan_min = balance;
@@ -405,46 +407,46 @@
                             balan_max = balance;
                         }
                         dict['Balance'] = map_in[i]-map_out[i];
-    					mapdata.push(dict);
-    				}else{
-    					continue;
-    				}
-    			}
-    		}
-    	}
+                        mapdata.push(dict);
+                    }else{
+                        continue;
+                    }
+                }
+            }
+        }
         //console.log(-100<-90);
-    	//console.log(mapdata);
+        //console.log(mapdata);
         //console.log(balan_min);
         //console.log(balan_max);
-    	return mapdata;
+        return mapdata;
 
     };
     function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
-	function maptoolTip(d){
-    	for (i in mapdata){
-        	if(d.id == mapdata[i].CountryCode){
-            	return "<h4>"+d.properties.name+"</h4><table>"+
+    function maptoolTip(d){
+        for (i in mapdata){
+            if(d.id == mapdata[i].CountryCode){
+                return "<h4>"+d.properties.name+"</h4><table>"+
                 "<tr><td>Population</td><td>"+(numberWithCommas(mapdata[i].Population))+"</td></tr>"+
                 "<tr><td>Movein</td><td>"+(numberWithCommas(mapdata[i].Movein))+"</td></tr>"+
                 "<tr><td>Moveout</td><td>"+(numberWithCommas(mapdata[i].Moveout))+"</td></tr>"+
                 "<tr><td>Balance</td><td>"+(numberWithCommas(mapdata[i].Balance))+"</td></tr>"+
                 "</table>"; 
-        	}
-    	}
-	};
-	function mouseOvermap(d){
+            }
+        }
+    };
+    function mouseOvermap(d){
         d3.select("#tooltip").transition().duration(200).style("opacity", .9);              
         d3.select("#tooltip").html(maptoolTip(d))  
         .style("left", (d3.event.pageX) + "px")     
         .style("top", (d3.event.pageY - 28) + "px");
-	};
+    };
 
-	function mouseOutmap(){
+    function mouseOutmap(){
         d3.select("#tooltip").transition().duration(500).style("opacity", 0);
-	};
-	function drawmap(data){
+    };
+    function drawmap(data){
         var height = 550;
         var width = 1000;    
         var projection = d3.geo.mercator()
@@ -452,93 +454,85 @@
             .translate([width / 2, height/1.4 ]);
         var path = d3.geo.path()
             .projection(projection);
-		var svgMap = d3.select("#worldmap").append('svg')
+        var svgMap = d3.select("#worldmap").append('svg')
             .attr("height", height).attr("width", width)
             .attr("id", "mapsvg");
-		var pop_max = 0;
-    	var pop_min = Infinity;
-    	mapdata = processmapdata(data);
-    	for (var i= 0 ; i< mapdata.length; i++){
-    		//console.log(mapdata[i].Population);
-    		if(mapdata[i].Population< pop_min){ pop_min = mapdata[i].Population};
-    		if(mapdata[i].Population> pop_max){ pop_max = mapdata[i].Population};
-    	};	
-    	//console.log(balan_min)
-    	//console.log(balan_max)
+        var pop_max = 0;
+        var pop_min = Infinity;
+        mapdata = processmapdata(data);
+        for (var i= 0 ; i< mapdata.length; i++){
+            //console.log(mapdata[i].Population);
+            if(mapdata[i].Population< pop_min){ pop_min = mapdata[i].Population};
+            if(mapdata[i].Population> pop_max){ pop_max = mapdata[i].Population};
+        };  
+        //console.log(balan_min)
+        //console.log(balan_max)
         var color_lst = [-10000000, -5000000, -2000000,-1000000, 0, 100000, 5000000, 10000000, 35000000];
         //console.log(d3.extent(color_lst));
-    	var color = d3.scale.linear().domain(color_lst).range(d3.schemeRdYlBu[9]);
+        var color = d3.scale.linear().domain(color_lst).range(d3.schemeRdYlBu[9]);
         //console.log(color(-10000000));
         //console.log(color(35000000));
-    	//console.log(color(120000000))
-    	var legend = svgMap.selectAll("g.legend")
-    				.data(color_lst)
-    				.enter().append("g").attr("class", "maplegend")
+        //console.log(color(120000000))
+        var legend = svgMap.selectAll("g.legend")
+                    .data(color_lst)
+                    .enter().append("g").attr("class", "maplegend")
         var legend_width = 25;
-    	legend.append("rect").attr("x", function(d,i){return 5 + i*legend_width;})
-    	.attr("y", height-70)
-    	.attr("width", legend_width)
-    	.attr("height", 10)
-    	.style("fill", function(d,i){ return color(d)})
+        legend.append("rect").attr("x", function(d,i){return 5 + i*legend_width;})
+        .attr("y", height-70)
+        .attr("width", legend_width)
+        .attr("height", 10)
+        .style("fill", function(d,i){ return color(d)})
 
-    	legend.append("text")
-  		.attr("x", function(d, i){ return 8 + i*legend_width;})
-  		.attr("y", height-50)
-  		.data(['-10M','-5M','-2M','-1M','0','0.1M','5M','10M','35M'])
-  		.text(function(d){ return d; })
+        legend.append("text")
+        .attr("x", function(d, i){ return 8 + i*legend_width;})
+        .attr("y", height-50)
+        .data(['-10M','-5M','-2M','-1M','0','0.1M','5M','10M','35M'])
+        .text(function(d){ return d; })
         .style("font-size", 10);
 
-    	d3.json("data/countries.geo.json", function(error, pathdata){
-    		if(error) throw error;
-    		svgMap.selectAll("path")
-    		.data(pathdata.features)
-    		.enter()
-    		.append("path").attr("class","country_path")
-    		.attr("d",path)
-    		.style("fill",function(d){
-    			for(i in mapdata){
-    				if(d.id == mapdata[i].CountryCode){
+        d3.json("data/countries.geo.json", function(error, pathdata){
+            if(error) throw error;
+            svgMap.selectAll("path")
+            .data(pathdata.features)
+            .enter()
+            .append("path").attr("class","country_path")
+            .attr("d",path)
+            .style("fill",function(d){
+                for(i in mapdata){
+                    if(d.id == mapdata[i].CountryCode){
 
-    					return color(mapdata[i].Balance);
-    				}
-    			}
-    		})
-    		.on("mouseover", mouseOvermap).on("mouseout", mouseOutmap);
-    		//console.log(pathdata.features[0].properties.name);
-    		//console.log(map_pop);
-    	})
-	}
-	
+                        return color(mapdata[i].Balance);
+                    }
+                }
+            })
+            .on("mouseover", mouseOvermap).on("mouseout", mouseOutmap);
+            //console.log(pathdata.features[0].properties.name);
+            //console.log(map_pop);
+        })
+    }
+    
 
-	dispatch1.on("load.map", function(data){
-    	drawmap(data);
+    dispatch1.on("load.map", function(data){
+        drawmap(data);
     });
     function yearchange(year){
-    		yearchoose = year;
-    		d3.select('#mapsvg').remove();
-    		drawmap(jsonData);
+            yearchoose = year;
+            d3.select('#mapsvg').remove();
+            drawmap(jsonData);
     }
 
     </script>
     </section>
 
-        <aside class="bg-dark">
-            <div class="container text-center">
-                <div class="call-to-action">
-                    <h2>For the Map </h2>
-                    <a href="http://startbootstrap.com/template-overviews/creative/" class="btn btn-default btn-xl sr-button">Next</a>
-                </div>
-            </div>
-        </aside>
-
 <!-- This is for the Intro2 -->
+
         <section class="bg-primary" id="intro2">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 text-center">
-                        <h2 class="section-heading">We've got what you need!</h2>
+                        <h2 class="section-heading" style=" font-family: Impact, Haettenschweiler, 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans serif; font-size: 35px;">Chord Diagrams</h2>
                         <hr class="light">
-                        <p class="text-faded">Start Bootstrap has everything you need to get your new website up and running in no time! All of the templates and themes on Start Bootstrap are open source, free to download, and easy to use. No strings attached!</p>
+                        <p class="text-faded" style="color:#000000; font-family: Garamond, Baskerville, 'Baskerville Old Face', 'Hoefler Text', 'Times New Roman', serif; font-style: italic; font-size: 25px;">Start Bootstrap has everything you need to get your new website up and running in no time! All of the templates and themes on Start Bootstrap are open source, free to download, and easy to use. No strings attached!</p>
                         <a href="#v2" class="page-scroll btn btn-default btn-xl sr-button">Get Started!</a>
                     </div>
                 </div>
@@ -888,23 +882,15 @@
     </body>
     </section>
 
-        <aside class="bg-dark">
-            <div class="container text-center">
-                <div class="call-to-action">
-                    <h2>For the Map </h2>
-                    <a href="http://startbootstrap.com/template-overviews/creative/" class="btn btn-default btn-xl sr-button">Next</a>
-                </div>
-            </div>
-        </aside>
 
 <!-- This is for the Intro3 -->
         <section class="bg-primary" id="intro3">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 text-center">
-                        <h2 class="section-heading">We've got what you need!</h2>
+                        <h2 class="section-heading" style=" font-family: Impact, Haettenschweiler, 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans serif; font-size: 35px;">Parallel Coordinates</h2>
                         <hr class="light">
-                        <p class="text-faded">Start Bootstrap has everything you need to get your new website up and running in no time! All of the templates and themes on Start Bootstrap are open source, free to download, and easy to use. No strings attached!</p>
+                        <p class="text-faded" style="color:#000000; font-family: Garamond, Baskerville, 'Baskerville Old Face', 'Hoefler Text', 'Times New Roman', serif; font-style: italic; font-size: 25px;">This chart aims to show the migration pattern for each country in five decades in details. Use the brush or search for the country to explore!</p>
                         <a href="#v3" class="page-scroll btn btn-default btn-xl sr-button">Get Started!</a>
                     </div>
                 </div>
@@ -916,15 +902,16 @@
     <body>
  <!--    <div class = 'child3' id = 'parallel' align="center" style="height: 600px">
     </div> -->
-   <div class = 'child3'  style="height: 700px">
+   <div class = 'child3'  style="height: 500px">
         <div id = 'parallel' align="center"></div>
             <div id = 'searchdiv' align="center">
                 <input type="text" list = 'country_list' id="searchbox" placeholder="Search countries..." ></input>
                 <datalist id = 'country_list'></datalist>
                 <button id='Add' type="button" value="Add" onclick="showline()">Add</button>
                 <button id='Reset' type="button" value="reset" onclick="para_reset()">Reset</button>
+
             </div>
-            <p style= 'font: 20px sans-serif'>In this visualization we can see that developed countries usually have positive balances while the majority of developing countries have negative balances</p>
+            <p style="color:#000000; font-family: Garamond, Baskerville, 'Baskerville Old Face', 'Hoefler Text', 'Times New Roman', serif; font-style: italic; font-size: 25px;">In this visualization we can see that developed countries usually have positive balances while the majority of developing<br> countries have negative balances</p>
         </div>
 
     </body>
@@ -943,7 +930,7 @@
     });
     
     dispatch2.on("load.parallel", function(data){
-    	drawparallel(data);
+        drawparallel(data);
     });
     function getcountry(data){
         var country_list = [];
@@ -1013,22 +1000,22 @@
         var country_list = getcountry(data);
         inputdatalist(country_list);
         //console.log(country_list);
-    	var margin = {top: 60, right: 10, bottom: 10, left: 70};
+        var margin = {top: 60, right: 10, bottom: 10, left: 70};
         var para_height = 300;
         var para_width = 800;
-		var x = d3.scale.ordinal().rangePoints([30, para_width-margin.left], 1),
-    		y = {},
-    		dragging = {};
+        var x = d3.scale.ordinal().rangePoints([30, para_width-margin.left], 1),
+            y = {},
+            dragging = {};
 
-		var line = d3.svg.line(),
-    		axis = d3.svg.axis().orient("left"),
-    		background,
-    		foreground;
+        var line = d3.svg.line(),
+            axis = d3.svg.axis().orient("left"),
+            background,
+            foreground;
 
-		var svgpara = d3.select("#parallel").append("svg").attr('id','parallelsvg')
-    		.attr("width", para_width+ margin.left + margin.right)
-    		.attr("height", para_height+ margin.top + margin.bottom)
-  			.append("g")
+        var svgpara = d3.select("#parallel").append("svg").attr('id','parallelsvg')
+            .attr("width", para_width+ margin.left + margin.right)
+            .attr("height", para_height+ margin.top + margin.bottom)
+            .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
         var output = d3.select("#parallel").append("pre");
         var types = {
@@ -1174,7 +1161,7 @@
             return line(dimensions.map(function(dim) {
                 return [x(dim.name), dim.scale(d[dim.name])];
             }));
-        }; 	
+        };  
     function brushstart() {
         d3.event.sourceEvent.stopPropagation();
     };
@@ -1204,16 +1191,6 @@
 
 
     </script>
-
-        <aside class="bg-dark">
-            <div class="container text-center">
-                <div class="call-to-action">
-                    <h2>For the Parallel Coordinate </h2>
-                    <a href="http://startbootstrap.com/template-overviews/creative/" class="btn btn-default btn-xl sr-button">Next</a>
-                </div>
-            </div>
-        </aside>
-
     </section>
 
 <!-- This is for the video show -->
@@ -1237,7 +1214,7 @@
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 text-center">
                     <h2 class="section-heading">Our Team</h2>
-                    <p>This project is designed and developed for the final project of CS573 Data Visualization (Fall 2015) at Worcester Polytechnic Institute by:</p>
+                    <p>This project is designed and developed for the final project of CS573 Data Visualization (Fall 2016) at Worcester Polytechnic Institute by:</p>
             <!--   <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
