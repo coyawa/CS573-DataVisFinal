@@ -9,7 +9,8 @@
         <script src="http://d3js.org/d3-color.v1.min.js"></script>
         <script src="http://d3js.org/d3-interpolate.v1.min.js"></script>
         <script src="http://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-
+		<script src="https://afarkas.github.io/webshim/js-webshim/minified/polyfiller.js"></script>
+	    <script src="divgrid.js"></script>
         <style>
     /*@import url(style.css);*/
     #circle circle {
@@ -85,7 +86,7 @@
         font: 15px sans-serif;
     }
     #parallelsvg{
-        font: 15px sans-serif;
+        font: 10px sans-serif;
     }
     #tooltip {
         position: absolute;
@@ -185,13 +186,11 @@
     }
     .foreground path {
         fill: none;
-        stroke: #222;
-        stroke-opacity: 0.38;
         pointer-events: none;
         stroke-width: 1.5px;
     }
     .axis .title {
-        font-size: 15px;
+        font-size: 13px;
         font-weight: bold;
         text-transform: uppercase;
         transform: rotate(-12deg) translate(-5px,-6px);
@@ -209,15 +208,16 @@
     }
 
     pre {
-        width: 1200px;
-        height: 900px;
+        width: 800px;
+        height: 100px;
         margin: 10px 30px;
         tab-size: 12;
         font-size: 15px;
         overflow: auto;
     }
-     #searchdiv{
-        width: 20.3%;
+    #searchdiv{
+        width: 40%;
+        margin: 0 auto;
     }
 
     .div-inlin{
@@ -351,63 +351,63 @@
     </div>
     </body>
     <script type="text/javascript">
-        <!-- Draw map-->
-        var dispatch1 = d3.dispatch('load'); 
-        var balan_max = 0;
-        var balan_min = 0;
-        var yearchoose = 2000; 
-        var jsonData = undefined;
+    <!-- Draw map-->
+	var dispatch1 = d3.dispatch('load'); 
+    var balan_max = 0;
+    var balan_min = 0;
+    var yearchoose = 2000; 
+    var jsonData = undefined;
 
-        d3.json("data/data.json", function(error, data){
-            //console.log(data);
-            if (error) throw error;
-            jsonData = data;
-            dispatch1.load(data);
+    d3.json("data/data.json", function(error, data){
+        //console.log(data);
+    	if (error) throw error;
+    	jsonData = data;
+    	dispatch1.load(data);
 
-        });
+    });
 
     function processmapdata(data){
-        var map_pop = {},
-            map_out = {},
-            map_in = {};
-        //console.log(data[0].Country)
-        for(var i=0; i<data.length; i++){
-            var key = data[i].CountryCode,
-                key2 = data[i].CountrytoCode;
-            if (data[i].Year == yearchoose){
-                if (!map_pop.hasOwnProperty(key)) {
-                    map_pop[key] = data[i].Population
-                };
-                if (!map_out.hasOwnProperty(key)) {
-                    map_out[key] = data[i].Volume
-                }
-                else{
-                    map_out[key] += data[i].Volume
-                };
-                if (!map_in.hasOwnProperty(key2)) {
-                    map_in[key2] = data[i].Volume
-                }
-                else{
-                    map_in[key2] += data[i].Volume
-                };
-            }
-        };
+		var map_pop = {},
+    		map_out = {},
+    		map_in = {};
+    	//console.log(data[0].Country)
+    	for(var i=0; i<data.length; i++){
+    		var key = data[i].CountryCode,
+    			key2 = data[i].CountrytoCode;
+    		if (data[i].Year == yearchoose){
+    			if (!map_pop.hasOwnProperty(key)) {
+    				map_pop[key] = data[i].Population
+    			};
+    			if (!map_out.hasOwnProperty(key)) {
+    				map_out[key] = data[i].Volume
+    			}
+    			else{
+					map_out[key] += data[i].Volume
+    			};
+    			if (!map_in.hasOwnProperty(key2)) {
+    				map_in[key2] = data[i].Volume
+    			}
+    			else{
+					map_in[key2] += data[i].Volume
+    			};
+    		}
+    	};
 
-        //console.log(map_pop);
-        //console.log(map_in);
-        //console.log(map_out);
+    	//console.log(map_pop);
+    	//console.log(map_in);
+    	//console.log(map_out);
 
-        var mapdata = [];
-        for(i in map_pop){
-            for(j in map_out){
-                for(m in map_in){
-                    if (i ==j && i==m){
-                        var dict = {};
+    	var mapdata = [];
+    	for(i in map_pop){
+    		for(j in map_out){
+    			for(m in map_in){
+    				if (i ==j && i==m){
+    					var dict = {};
                         
-                        dict['CountryCode'] = i;
-                        dict['Population'] = map_pop[i];
-                        dict['Moveout'] = map_out[i];
-                        dict['Movein'] = map_in[i];
+    					dict['CountryCode'] = i;
+    					dict['Population'] = map_pop[i];
+    					dict['Moveout'] = map_out[i];
+    					dict['Movein'] = map_in[i];
                         balance = map_in[i]-map_out[i];
                         if (balance < balan_min){
                             balan_min = balance;
@@ -416,44 +416,44 @@
                             balan_max = balance;
                         }
                         dict['Balance'] = map_in[i]-map_out[i];
-                        mapdata.push(dict);
-                    }else{
-                        continue;
-                    }
-                }
-            }
-        }
+    					mapdata.push(dict);
+    				}else{
+    					continue;
+    				}
+    			}
+    		}
+    	}
         //console.log(-100<-90);
-        //console.log(mapdata);
+    	//console.log(mapdata);
         //console.log(balan_min);
         //console.log(balan_max);
-        return mapdata;
+    	return mapdata;
 
     };
 
-    function maptoolTip(d){
-        for (i in mapdata){
-            if(d.id == mapdata[i].CountryCode){
-                return "<h4>"+d.properties.name+"</h4><table>"+
+	function maptoolTip(d){
+    	for (i in mapdata){
+        	if(d.id == mapdata[i].CountryCode){
+            	return "<h4>"+d.properties.name+"</h4><table>"+
                 "<tr><td>Population</td><td>"+(mapdata[i].Population)+"</td></tr>"+
                 "<tr><td>Movein</td><td>"+(mapdata[i].Movein)+"</td></tr>"+
                 "<tr><td>Moveout</td><td>"+(mapdata[i].Moveout)+"</td></tr>"+
                 "<tr><td>Balance</td><td>"+(mapdata[i].Balance)+"</td></tr>"+
                 "</table>"; 
-            }
-        }
-    };
-    function mouseOvermap(d){
+        	}
+    	}
+	};
+	function mouseOvermap(d){
         d3.select("#tooltip").transition().duration(200).style("opacity", .9);              
         d3.select("#tooltip").html(maptoolTip(d))  
         .style("left", (d3.event.pageX) + "px")     
         .style("top", (d3.event.pageY - 28) + "px");
-    };
+	};
 
-    function mouseOutmap(){
+	function mouseOutmap(){
         d3.select("#tooltip").transition().duration(500).style("opacity", 0);
-    };
-    function drawmap(data){
+	};
+	function drawmap(data){
         var height = 600;
         var width = 1000;    
         var projection = d3.geo.mercator()
@@ -461,71 +461,71 @@
             .translate([width / 2, height/1.4 ]);
         var path = d3.geo.path()
             .projection(projection);
-        var svgMap = d3.select("#worldmap").append('svg')
+		var svgMap = d3.select("#worldmap").append('svg')
             .attr("height", height).attr("width", width)
             .attr("id", "mapsvg");
-        var pop_max = 0;
-        var pop_min = Infinity;
-        mapdata = processmapdata(data);
-        for (var i= 0 ; i< mapdata.length; i++){
-            //console.log(mapdata[i].Population);
-            if(mapdata[i].Population< pop_min){ pop_min = mapdata[i].Population};
-            if(mapdata[i].Population> pop_max){ pop_max = mapdata[i].Population};
-        };  
-        //console.log(balan_min)
-        //console.log(balan_max)
+		var pop_max = 0;
+    	var pop_min = Infinity;
+    	mapdata = processmapdata(data);
+    	for (var i= 0 ; i< mapdata.length; i++){
+    		//console.log(mapdata[i].Population);
+    		if(mapdata[i].Population< pop_min){ pop_min = mapdata[i].Population};
+    		if(mapdata[i].Population> pop_max){ pop_max = mapdata[i].Population};
+    	};	
+    	//console.log(balan_min)
+    	//console.log(balan_max)
         var color_lst = [-10000000, -5000000, -2000000,-1000000, 0, 100000, 5000000, 10000000, 35000000];
         //console.log(d3.extent(color_lst));
-        var color = d3.scale.linear().domain(color_lst).range(d3.schemeRdYlBu[9]);
+    	var color = d3.scale.linear().domain(color_lst).range(d3.schemeRdYlBu[9]);
         //console.log(color(-10000000));
         //console.log(color(35000000));
-        //console.log(color(120000000))
-        var legend = svgMap.selectAll("g.legend")
-                    .data(color_lst)
-                    .enter().append("g").attr("class", "maplegend")
+    	//console.log(color(120000000))
+    	var legend = svgMap.selectAll("g.legend")
+    				.data(color_lst)
+    				.enter().append("g").attr("class", "maplegend")
         var legend_width = 25;
-        legend.append("rect").attr("x", function(d,i){return 5 + i*legend_width;})
-        .attr("y", height-70)
-        .attr("width", legend_width)
-        .attr("height", 10)
-        .style("fill", function(d,i){ return color(d)})
+    	legend.append("rect").attr("x", function(d,i){return 5 + i*legend_width;})
+    	.attr("y", height-70)
+    	.attr("width", legend_width)
+    	.attr("height", 10)
+    	.style("fill", function(d,i){ return color(d)})
 
-        legend.append("text")
-        .attr("x", function(d, i){ return 8 + i*legend_width;})
-        .attr("y", height-50)
-        .data(['-10M','-5M','-2M','-1M','0','0.1M','5M','10M','35M'])
-        .text(function(d){ return d; })
+    	legend.append("text")
+  		.attr("x", function(d, i){ return 8 + i*legend_width;})
+  		.attr("y", height-50)
+  		.data(['-10M','-5M','-2M','-1M','0','0.1M','5M','10M','35M'])
+  		.text(function(d){ return d; })
         .style("font-size", 10);
 
-        d3.json("data/countries.geo.json", function(error, pathdata){
-            if(error) throw error;
-            svgMap.selectAll("path")
-            .data(pathdata.features)
-            .enter()
-            .append("path").attr("class","country_path")
-            .attr("d",path)
-            .style("fill",function(d){
-                for(i in mapdata){
-                    if(d.id == mapdata[i].CountryCode){
+    	d3.json("data/countries.geo.json", function(error, pathdata){
+    		if(error) throw error;
+    		svgMap.selectAll("path")
+    		.data(pathdata.features)
+    		.enter()
+    		.append("path").attr("class","country_path")
+    		.attr("d",path)
+    		.style("fill",function(d){
+    			for(i in mapdata){
+    				if(d.id == mapdata[i].CountryCode){
 
-                        return color(mapdata[i].Balance);
-                    }
-                }
-            })
-            .on("mouseover", mouseOvermap).on("mouseout", mouseOutmap);
-            //console.log(pathdata.features[0].properties.name);
-            //console.log(map_pop);
-        })
-    }
-    
+    					return color(mapdata[i].Balance);
+    				}
+    			}
+    		})
+    		.on("mouseover", mouseOvermap).on("mouseout", mouseOutmap);
+    		//console.log(pathdata.features[0].properties.name);
+    		//console.log(map_pop);
+    	})
+	}
+	
 
-    dispatch1.on("load.map", function(data){
-        drawmap(data);
+	dispatch1.on("load.map", function(data){
+    	drawmap(data);
     });
     function yearchange(year){
-            yearchoose = year;
-            d3.select('#mapsvg').remove();
-            drawmap(jsonData);
+    		yearchoose = year;
+    		d3.select('#mapsvg').remove();
+    		drawmap(jsonData);
     }
 
     </script>
@@ -929,6 +929,8 @@
     <!--Draw parallel coordinates-->
     var dispatch2 = d3.dispatch('load');
     var csvData = undefined;
+    var show_country_list = [];
+    
     d3.csv('data/parallel_new.csv', function (error, data) {
         if (error) throw error;
         // initial load for all of the maps
@@ -938,7 +940,7 @@
     });
     
     dispatch2.on("load.parallel", function(data){
-        drawparallel(data);
+    	drawparallel(data);
     });
     function getcountry(data){
         var country_list = [];
@@ -949,13 +951,38 @@
 
     }
     function showline(){
-        input_country = document.getElementById('searchbox').value;
-        return input_country;
-    }
-    function drawparallel(data){
-        //console.log(data);
-        var country_list = getcountry(data);
+        var input_country = document.getElementById('searchbox').value;
+        show_country_list.push(input_country);
+        d3.select("#parallelsvg").remove();
+        d3.select("pre").remove();
+        d3.select('option').remove();
+        console.log(show_country_list);
+        drawparallel(csvData);
+        d3.select("pre").remove();
+        selected = [];
+        var output = d3.select("#parallel").append("pre");
+        d3.selectAll(".foreground path").style("display", function(d) {
+            //console.log(d);
+            for (i in show_country_list){
+                if(d.Country == show_country_list[i]){
+                selected.push(d);
+                return true;
+                }
+            }
+            return "none";
+        });
+        output.text(d3.tsv.format(selected));
 
+
+    };
+    function para_reset(){
+        var show_country_list = [];
+        d3.select("#parallelsvg").remove();
+        d3.select("pre").remove();
+        d3.select('option').remove();
+        drawparallel(csvData);
+    };
+    function inputdatalist(country_list){
         webshim.setOptions('forms', {
           customDatalist: true
         });
@@ -977,26 +1004,30 @@
         .append('option')
         .attr('val', function(d){return d;})
         .text(function(d){ return d});
-
+    }
+    function drawparallel(data){
+        //console.log(data);
+        var country_list = getcountry(data);
+        inputdatalist(country_list);
         //console.log(country_list);
-        var margin = {top: 60, right: 10, bottom: 10, left: 70};
-        var para_height = 400;
+    	var margin = {top: 60, right: 10, bottom: 10, left: 70};
+        var para_height = 300;
         var para_width = 800;
-        var x = d3.scale.ordinal().rangePoints([0, para_width-margin.left], 1),
-            y = {},
-            dragging = {};
+		var x = d3.scale.ordinal().rangePoints([30, para_width-margin.left], 1),
+    		y = {},
+    		dragging = {};
 
-        var line = d3.svg.line(),
-            axis = d3.svg.axis().orient("left"),
-            background,
-            foreground;
+		var line = d3.svg.line(),
+    		axis = d3.svg.axis().orient("left"),
+    		background,
+    		foreground;
 
-        var svgpara = d3.select("#parallel").append("svg").attr('id','parallelsvg')
-            .attr("width", para_width+ margin.left + margin.right)
-            .attr("height", para_height+ margin.top + margin.bottom)
-            .append("g")
+		var svgpara = d3.select("#parallel").append("svg").attr('id','parallelsvg')
+    		.attr("width", para_width+ margin.left + margin.right)
+    		.attr("height", para_height+ margin.top + margin.bottom)
+  			.append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        //var output = d3.select("#parallel").append("pre");
+        var output = d3.select("#parallel").append("pre");
         var types = {
                 "Number": {
                     key: "Number",
@@ -1095,35 +1126,24 @@
         });
         color.domain(colordimension.scale.domain());
         //console.log(colordimension.name);
+        //console.log(data);
         svgpara.append("g")
             .attr("class", "foreground")
             .selectAll("path")
             .data(data)
             .enter().append("path")
-            .attr('id','cord')
+            .attr('class','cord')
             .attr("d", draw)
-            .style("stroke", function(d) {return color(d[colordimension.name]); })
-            .style('opacity', 0.3)
-            .on("mouseover", mouseOvercord).on("mouseout", mouseOutcord);
-
-        function cordtoolTip(d){
-                    console.log(d)
-                    return "<h4>"+d.Country+"</h4><table>"+
-                    "<tr><td>Develop</td><td>"+(d.Develop)+"</td></tr>"+
-                    "<tr><td>1960</td><td>"+(d.Total)+"</td></tr>"+
-                    "</table>"; 
-
-        };
-        function mouseOvercord(d){
-            d3.select("#tooltip").transition().duration(200).style("opacity", .9);              
-            d3.select("#tooltip").html(cordtoolTip(d))  
-            .style("left", (d3.event.pageX) + "px")     
-            .style("top", (d3.event.pageY - 28) + "px");
-        };
-
-        function mouseOutcord(){
-            d3.select("#tooltip").transition().duration(500).style("opacity", 0);
-        };
+            .style("stroke", function(d,i) {console.log(i);return color(d[colordimension.name]); })
+            .style('opacity', 0.38)
+            .on("mouseover", function(d,i){
+                svgpara.selectAll('.cord').transition().duration(250)
+                .style("stroke-width",function(d,j){ return j!=i? 1.5:3})
+                .style("opacity",function(d,j){ return j!=i? 0.2:1})
+            })
+            .on("mouseout", function(d,i){
+                svgpara.selectAll('.cord').transition().duration(250).attr("opacity", 0.38);
+            });
 
         dimension.append("g")
             .attr("class", "axis")
@@ -1145,14 +1165,13 @@
             .attr("x", -8)
             .attr("width", 16);
 
-        //output.text(d3.tsv.format(data));
-
+        output.text(d3.tsv.format(data));
 
         function draw(d) {
             return line(dimensions.map(function(dim) {
                 return [x(dim.name), dim.scale(d[dim.name])];
             }));
-        };  
+        }; 	
     function brushstart() {
         d3.event.sourceEvent.stopPropagation();
     };
@@ -1175,9 +1194,11 @@
           return "none";
         });
 
-        //output.text(d3.tsv.format(selected));
+        output.text(d3.tsv.format(selected));
     };
     };
+
+
 
     </script>
 
