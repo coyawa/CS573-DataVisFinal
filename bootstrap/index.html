@@ -292,7 +292,7 @@
                             <a class="page-scroll" href="#video">Demo</a>
                         </li>
                         <li>
-                            <a class="page-scroll" href="#team">Team</a>
+                            <a class="page-scroll" href="#download">Download</a>
                         </li>
                     </ul>
                 </div>
@@ -338,15 +338,7 @@
         <button class="button" id = 'button00' onclick="yearchange(2000)"><span>2000</span></button>
     </div>
     <div class = 'child2' id = 'textmap' align="center" style="height: 200px"></div>
-    <div class = 'child3'  style="height: 900px">
-        <div id = 'parallel' align="center"></div>
-        <div id = 'searchdiv' align="center">
-                <input type="text" list = 'country_list' id="searchbox" placeholder="Search countries..." ></input>
-                <datalist id = 'country_list'></datalist>
-                <button id='Add' type="button" value="Add" onclick="showline()">Show</button>
-
-            </div>   
-        </div>
+ 
     <div class = div id = "tooltip"></div>
     </div>
     </body>
@@ -921,9 +913,17 @@
 <!-- This is for the Parallel Coordinate visualization -->
     <section id="v3">
     <body>
-    <div class = 'child3' id = 'parallel' align="center" style="height: 600px">
-    </div>
+ <!--    <div class = 'child3' id = 'parallel' align="center" style="height: 600px">
+    </div> -->
+   <div class = 'child3'  style="height: 700px">
+        <div id = 'parallel' align="center"></div>
+        <div id = 'searchdiv' align="center">
+                <input type="text" list = 'country_list' id="searchbox" placeholder="Search countries..." ></input>
+                <datalist id = 'country_list'></datalist>
+                <button id='Add' type="button" value="Add" onclick="showline()">Show</button>
 
+            </div>   
+        </div>
     </body>
     <script type="text/javascript">
     <!--Draw parallel coordinates-->
@@ -1229,7 +1229,7 @@
         </section>
 
 <!-- This is for the Team Introduction -->
-        <section class="bg-primary" id="team">
+        <section class="bg-primary" id="download">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 text-center">
