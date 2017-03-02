@@ -10,7 +10,7 @@ Yimin Lin             | Email: ylin6@wpi.edu        | Github: @YiminLin1994
 Xiaoqun Wang    | Email: xwang16@wpi.edu  | Github: @ntugigolo  
 
 ##Prototype Demo:
-http://coyawa.github.io/DataVisFinal/index.html  
+http://coyawa.github.io/DataVisFinal/ 
 
 ##Project Repo:
 https://github.com/coyawa/DataVisFinal  
