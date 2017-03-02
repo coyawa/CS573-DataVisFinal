@@ -284,19 +284,19 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a class="page-scroll" href="#v1">Map</a>
+                            <a class="page-scroll" href="#v1">World Map</a>
                         </li>
                         <li>
-                            <a class="page-scroll" href="#v2">Chord</a>
+                            <a class="page-scroll" href="#v2">Top Choice</a>
                         </li>
                         <li>
-                            <a class="page-scroll" href="#v3">Parallel</a>
+                            <a class="page-scroll" href="#v3">Migration Details</a>
                         </li>
                         <li>
-                            <a class="page-scroll" href="#video">Demo</a>
+                            <a class="page-scroll" href="#video">Video</a>
                         </li>
                         <li>
-                            <a class="page-scroll" href="#download">Download</a>
+                            <a class="page-scroll" href="#download">About</a>
                         </li>
                     </ul>
                 </div>
@@ -344,7 +344,7 @@
                 <button class="button" id = 'button00' onclick="yearchange(2000)"><span>2000</span></button>
             </div>
             <div class = div id = "tooltip"></div>
-            
+
             <a href="#intro2" class="btn btn-primary btn-xl page-scroll">Next</a>
         </div>
     </body>
@@ -355,15 +355,12 @@
     var balan_min = 0;
     var yearchoose = 2000;
     var jsonData = undefined;
-
     d3.json("data/data.json", function(error, data){
         //console.log(data);
         if (error) throw error;
         jsonData = data;
         dispatch1.load(data);
-
     });
-
     function processmapdata(data){
         var map_pop = {},
             map_out = {},
@@ -390,18 +387,15 @@
                 };
             }
         };
-
         //console.log(map_pop);
         //console.log(map_in);
         //console.log(map_out);
-
         var mapdata = [];
         for(i in map_pop){
             for(j in map_out){
                 for(m in map_in){
                     if (i ==j && i==m){
                         var dict = {};
-
                         dict['CountryCode'] = i;
                         dict['Population'] = map_pop[i];
                         dict['Moveout'] = map_out[i];
@@ -426,7 +420,6 @@
         //console.log(balan_min);
         //console.log(balan_max);
         return mapdata;
-
     };
     function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -449,7 +442,6 @@
         .style("left", (d3.event.pageX) + "px")
         .style("top", (d3.event.pageY - 28) + "px");
     };
-
     function mouseOutmap(){
         d3.select("#tooltip").transition().duration(500).style("opacity", 0);
     };
@@ -489,14 +481,12 @@
         .attr("width", legend_width)
         .attr("height", 10)
         .style("fill", function(d,i){ return color(d)})
-
         legend.append("text")
         .attr("x", function(d, i){ return 8 + i*legend_width;})
         .attr("y", height-50)
         .data(['-10M','-5M','-2M','-1M','0','0.1M','5M','10M','35M'])
         .text(function(d){ return d; })
         .style("font-size", 10);
-
         d3.json("data/countries.geo.json", function(error, pathdata){
             if(error) throw error;
             svgMap.selectAll("path")
@@ -507,7 +497,6 @@
             .style("fill",function(d){
                 for(i in mapdata){
                     if(d.id == mapdata[i].CountryCode){
-
                         return color(mapdata[i].Balance);
                     }
                 }
@@ -517,8 +506,6 @@
             //console.log(map_pop);
         })
     }
-
-
     dispatch1.on("load.map", function(data){
         drawmap(data);
     });
@@ -527,7 +514,6 @@
             d3.select('#mapsvg').remove();
             drawmap(jsonData);
     }
-
     </script>
     </section>
 
@@ -537,9 +523,9 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 text-center">
-                        <h2 class="section-heading" style=" font-family: Impact, Haettenschweiler, 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans serif; font-size: 35px;">Chord Diagrams</h2>
+                        <h2 class="section-heading" style=" font-family: Impact, Haettenschweiler, 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans serif; font-size: 35px;">Top Choice</h2>
                         <hr class="light">
-                        <p  style="font-size: 16px;">Start Bootstrap has everything you need to get your new website up and running in no time! All of the templates and themes on Start Bootstrap are open source, free to download, and easy to use. No strings attached!</p>
+                        <p  style="font-size: 16px;">The countries with large volume of immigration (larger than two million) has been demonstrated on the chord diagram. Select the country that you want to explore on the list box, or move your mouse over the chord, the overall spread of immigration have been displayed. Which country tend to have more and more outflow during time period? Which country is the top choice for immigrants? Explore by yourself! </p>
                         <a href="#v2" class="page-scroll btn btn-default btn-xl sr-button">go to the CHord</a>
                     </div>
                 </div>
@@ -549,15 +535,12 @@
 <!-- This is for the Chord visualization -->
     <section id="v2">
     <body>
-    <h3><strong>1960&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1970&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1980</strong></h3>
     <div class="div-inline" id = 'chordsel'  style="height: 400px"></div>
     <div class="div-inline" id = 'chordChart'  style="height: 600px"></div>
-    <h3><strong>1990&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2000</strong></h3>
     <div>
     <a href="#intro3" class="btn btn-primary btn-xl page-scroll">Next</a>
     </div>
     <script>
-
         var chord60,chord70,chord80,chord90,chord00;
         var cities = {};
         var groupPath1,groupPath2,groupPath3,groupPath4,groupPath5
@@ -565,14 +548,12 @@
         //dispatch.on("load.chord", function(yearById) {
         var width = 350,
         height = 350,
-        outerRadius = Math.min(width, height) / 2 - 10,
+        outerRadius = Math.min(width, height) / 2 - 25,
         innerRadius = outerRadius - 24;
-
         var formatPercent = d3.format(".1%");
         var arc = d3.svg.arc()
         .innerRadius(innerRadius)
         .outerRadius(outerRadius);
-
         var layout1 = d3.layout.chord()
         .padding(.04)
         .sortSubgroups(d3.descending)
@@ -593,13 +574,9 @@
         .padding(.04)
         .sortSubgroups(d3.descending)
         .sortChords(d3.ascending);
-
-
         show("2000")
-
         function show(data) {
         var yr = data
-
         var path1 = d3.svg.chord()
         .radius(innerRadius);
         var svg1 = d3.select("body").select('#chordChart').append("svg")
@@ -608,6 +585,14 @@
         .append("g")
         .attr("id", "circle")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        svg1.append("text")
+            .attr("x",-5)
+            .attr("y",-160)
+            .style("fill", "black")
+            .style("font-family","sans-serif")
+            .style("font-size", "20px")
+            .style("font-weight","bold")
+            .text("1960")
         var path2 = d3.svg.chord()
         .radius(innerRadius);
         var svg2 = d3.select("body").select('#chordChart').append("svg")
@@ -616,6 +601,14 @@
         .append("g")
         .attr("id", "circle")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        svg2.append("text")
+            .attr("x",-5)
+            .attr("y",-160)
+            .style("fill", "black")
+            .style("font-family","sans-serif")
+            .style("font-size", "20px")
+            .style("font-weight","bold")
+            .text("1970")
         var path3 = d3.svg.chord()
         .radius(innerRadius);
         var svg3 = d3.select("body").select('#chordChart').append("svg")
@@ -624,6 +617,14 @@
         .append("g")
         .attr("id", "circle")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        svg3.append("text")
+            .attr("x",-5)
+            .attr("y",-160)
+            .style("fill", "black")
+            .style("font-family","sans-serif")
+            .style("font-size", "20px")
+            .style("font-weight","bold")
+            .text("1980")
         var path4 = d3.svg.chord()
         .radius(innerRadius);
         var svg4 = d3.select("body").select('#chordChart').append("svg")
@@ -632,6 +633,14 @@
         .append("g")
         .attr("id", "circle")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        svg4.append("text")
+            .attr("x",-5)
+            .attr("y",-160)
+            .style("fill", "black")
+            .style("font-family","sans-serif")
+            .style("font-size", "20px")
+            .style("font-weight","bold")
+            .text("1990")
         var path5 = d3.svg.chord()
         .radius(innerRadius);
         var svg5 = d3.select("body").select('#chordChart').append("svg")
@@ -640,7 +649,14 @@
         .append("g")
         .attr("id", "circle")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
+        svg5.append("text")
+            .attr("x",-5)
+            .attr("y",-160)
+            .style("fill", "black")
+            .style("font-family","sans-serif")
+            .style("font-size", "20px")
+            .style("font-weight","bold")
+            .text("2000")
         svg1.append("circle")
         .attr("r", outerRadius);
         svg2.append("circle")
@@ -651,7 +667,6 @@
         .attr("r", outerRadius);
         svg5.append("circle")
         .attr("r", outerRadius);
-
         d3.csv("data/country_"+"60"+".csv", function(citi) {
           cities1 = citi
         })
@@ -667,7 +682,6 @@
         d3.csv("data/country_"+"00"+".csv", function(citi) {
           cities5 = citi
         })
-
         function test(callback){
         d3.json("data/matrix_"+"60"+".json", function(matrix1) {
           d3.json("data/matrix_"+"70"+".json", function(matrix2) {
@@ -728,9 +742,7 @@
         function mouseOutchord(){
               d3.select("#tooltip").transition().duration(500).style("opacity", 0);
         };
-
         test(function(matrix1,matrix2,matrix3,matrix4,matrix5){
-
           layout1.matrix(matrix1);
           layout2.matrix(matrix2);
           layout3.matrix(matrix3);
@@ -790,7 +802,6 @@
         .attr("d", path5);
         // Add the group arc.
         ////////////拉出來寫//////////
-
         groupPath1 = group1.on("mouseover", mouseover)
         .append("path")
         .attr("id", function(d, i) { return "group" + i; })
@@ -830,14 +841,12 @@
         /*var groupText = group.append("text")
         .attr("x", 6)
         .attr("dy", 15);
-
         groupText.append("textPath")
         .attr("xlink:href", function(d, i) { return "#group" + i; })
         .text(function(d, i) { return cities[i].name; });
         // Remove the labels that don't fit. :(
         groupText.filter(function(d, i) { return groupPath[0][i].getTotalLength() / 2 - 16 < this.getComputedTextLength(); })
         .remove();*/
-
         // Add an elaborate mouseover title for each chord.
          chord60.append("title").text(function(d) {
          return cities1[d.source.index].name
@@ -879,7 +888,6 @@
          + " → " + cities5[d.source.index].name
          + ": " + d.target.value;
          });
-
         function mouseover(d, i) {
           chord60.classed("fade", function(p) {
           return p.source.index != i
@@ -902,7 +910,6 @@
           && p.target.index != i;
           });
         }
-
         function mouseout(d, i) {
           chord60.classed("fade", function(p) {
           return null;
@@ -930,7 +937,6 @@
           str = str + "</select>";
           return str;
         }
-
         document.getElementById("sel").onchange =function(){
         var par = []
         for (var i = 0; i < this.options.length; i++) {
@@ -941,7 +947,6 @@
         mouseoverT(par);
       }
         /*for(var i=0; i<cities5.length; i++){
-
         var word = cities5[i].name;
         var holder = d3.select("body").select('#national')
               .append("svg")
@@ -957,7 +962,6 @@
             .style("fill", cities5[i].color)
             .attr("rx", 10)
             .attr("ry", 10);
-
         holder.on("click", function(i){return function(){ mouseoverT(i);}}(i));
         // draw text on the screen
         holder.append("text")
@@ -992,13 +996,10 @@
               && p.target.index != i;
               });
             }
-
         });//Call back
         //});// d3.csv
         //});// d3.csv
-
         }; // show()
-
     </script>
 
     </body>
@@ -1010,7 +1011,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 text-center">
-                        <h2 class="section-heading" style=" font-family: Impact, Haettenschweiler, 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans serif; font-size: 35px;">Parallel Coordinates</h2>
+                        <h2 class="section-heading" style=" font-family: Impact, Haettenschweiler, 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans serif; font-size: 35px;">Migration Details</h2>
                         <hr class="light">
                         <p style="font-size: 16px;">This chart aims to show the migration pattern for each country in five decades in details. Use the brush or search for the country to explore!</p>
                         <p style="font-size: 16px;">In this visualization we can see that developed countries usually have positive balances while the majority of developing countries have negative balances</p>
@@ -1034,8 +1035,11 @@
                 <button id='Reset' type="button" value="reset" onclick="para_reset()">Reset</button>
 
             </div>
-            
+
             <div>
+            <P>
+                
+            </P>
             <a href="#video" class="btn btn-primary btn-xl page-scroll">Next</a>
             </div>
         </div>
@@ -1046,7 +1050,6 @@
     var dispatch2 = d3.dispatch('load');
     var csvData = undefined;
     var show_country_list = [];
-
     d3.csv('data/parallel_new.csv', function (error, data) {
         if (error) throw error;
         // initial load for all of the maps
@@ -1054,7 +1057,6 @@
         csvData = data;
         //console.log(data);
     });
-
     dispatch2.on("load.parallel", function(data){
         drawparallel(data);
     });
@@ -1064,7 +1066,6 @@
             country_list.push(data[i].Country);
         }
         return country_list;
-
     }
     function showline(){
         var input_country = document.getElementById('searchbox').value;
@@ -1088,8 +1089,6 @@
             return "none";
         });
         output.text(d3.tsv.format(selected));
-
-
     };
     function para_reset(){
         var show_country_list = [];
@@ -1132,12 +1131,10 @@
         var x = d3.scale.ordinal().rangePoints([30, para_width-margin.left], 1),
             y = {},
             dragging = {};
-
         var line = d3.svg.line(),
             axis = d3.svg.axis().orient("left"),
             background,
             foreground;
-
         var svgpara = d3.select("#parallel").append("svg").attr('id','parallelsvg')
             .attr("width", para_width+ margin.left + margin.right)
             .attr("height", para_height+ margin.top + margin.bottom)
@@ -1161,14 +1158,12 @@
                 }
             };
         var dimensions = [
-
                 {
                     name: "Develop",
                     scale: d3.scale.ordinal().rangePoints([0, para_height-0]),
                     type: types["String"],
                     domain: ['', "Developing", "Developed", ' ']
                 },
-
                 {
                     name: "1960",
                     scale: d3.scale.linear().range([para_height, 0]),
@@ -1225,14 +1220,12 @@
         //console.log(data);
         data.forEach(function(d) {
             dimensions.forEach(function(p) {
-
                 if (p.name in d){
                     //console.log(p.name);
                     d[p.name] = p.type.coerce(d[p.name]);
                 };
             });
         });
-
         dimensions.forEach(function(dim) {
             //console.log(dim.domain);
             if (!("domain" in dim)) {
@@ -1260,7 +1253,6 @@
             .on("mouseout", function(d,i){
                 svgpara.selectAll('.cord').transition().duration(250).attr("opacity", 0.38);
             });
-
         dimension.append("g")
             .attr("class", "axis")
             .each(function(d) { d3.select(this).call(yAxis.scale(d.scale)); })
@@ -1280,9 +1272,7 @@
             .selectAll("rect")
             .attr("x", -8)
             .attr("width", 16);
-
         output.text(d3.tsv.format(data));
-
         function draw(d) {
             return line(dimensions.map(function(dim) {
                 return [x(dim.name), dim.scale(d[dim.name])];
@@ -1291,14 +1281,11 @@
     function brushstart() {
         d3.event.sourceEvent.stopPropagation();
     };
-
     // Handles a brush event, toggling the display of foreground lines.
     function brush() {
         var actives = dimensions.filter(function(p) { return !p.brush.empty(); }),
             extents = actives.map(function(p) { return p.brush.extent(); });
-
         var selected = [];
-
         d3.selectAll(".foreground path").style("display", function(d) {
           if (actives.every(function(dim, i) {
               // test if point is within extents for each active brush
@@ -1309,19 +1296,17 @@
           }
           return "none";
         });
-
         output.text(d3.tsv.format(selected));
     };
     };
-
-
     </script>
     </section>
 
 <!-- This is for the video show -->
        <section id="video">
-
-                    <p>   </p>
+                    <h2 class="section-heading" style=" font-family: Impact, Haettenschweiler, 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans serif; font-size: 35px;">Visualization Video</h2>
+                  <!--   <p style="font-size: 16px; font-weight: bold;">Visualization Video</p> -->
+                    <p> <iframe width="853" height="480" src="https://www.youtube.com/embed/arqoi_DpoSw" frameborder="0" allowfullscreen></iframe>  </p>
                         <a href="#page-top" class="btn btn-primary btn-xl page-scroll">Back to Top</a>
                     </div>
                 </div>
@@ -1334,8 +1319,9 @@
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 text-center">
                     <h2 class="section-heading">Our Team</h2>
-                    <p>This project is designed and developed for the final project of CS573 Data Visualization (Fall 2016) at Worcester Polytechnic Institute by:</p>
-                    <p>xxx xxx xxx</p>
+                    <p>This project is designed and developed for the final project of CS573 Data Visualization at Worcester Polytechnic Institute</p>
+                    <p>by</p>
+                    <p>Xiaoqun Wang, Yimin Lin, Congyang Wang</p>
             <!--   <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
@@ -1389,7 +1375,7 @@
                 </div>
             </div>
         </div> -->
-                        <a href="https://docs.google.com/presentation/d/1ICi_AsZ1qAx1BfmrCsQfk0uJJf6iHElHOVIeQLm8wvA/edit?usp=sharing" class="page-scroll btn btn-default btn-xl sr-button"> <i class="fa fa-download"></i> Download ProcessBook</a>
+                        <a href="https://docs.google.com/presentation/d/1ICi_AsZ1qAx1BfmrCsQfk0uJJf6iHElHOVIeQLm8wvA/edit?usp=sharing" class="page-scroll btn btn-default btn-xl sr-button"> <i class="fa fa-download"></i> Download Process Book</a>
 
                     </div>
                 </div>
