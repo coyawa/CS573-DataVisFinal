@@ -1,11 +1,5 @@
 Final Project - Interactive Data Visualization  
 ===
-*Project Website: http://coyawa.github.io/DataVisFinal/*  
-*Project Process Book: xxxxxx*  
-*Project Video: xxxxx*  
-                   
-##Project Title: 
-WORLDWIDE MIGRATION PATTERN
 
 ##Team Members:
 Congyang Wang | Email: cwang8@wpi.edu   | Github: @coyawa  
