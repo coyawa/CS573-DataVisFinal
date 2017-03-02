@@ -9,6 +9,11 @@ Congyang Wang | Email: cwang8@wpi.edu   | Github: @coyawa
 Yimin Lin             | Email: ylin6@wpi.edu        | Github: @YiminLin1994  
 Xiaoqun Wang    | Email: xwang16@wpi.edu  | Github: @ntugigolo  
 
+##Members Responsibilities:
+Congyang Wang: Bootstrap, writing and optimization
+Yimin Lin: World map, parallel coordinates, writing and optimization
+Xiaoqun Wang: Chord diagram, writing and optimization
+
 ##Prototype Demo:
 http://coyawa.github.io/DataVisFinal/ 
 
