@@ -1,8 +1,8 @@
 Final Project - Interactive Data Visualization  
 ===
 *Project Website: http://coyawa.github.io/DataVisFinal/*  
-*Project Process Book: xxxxxx*  
-*Project Video: xxxxx*  
+*Project Process Book: https://github.com/coyawa/DataVisFinal/blob/gh-pages/Process%20Book.pdf*  
+*Project Video: https://youtu.be/kskiV5tCm3o*  
                    
 ##Team Members:
 Congyang Wang | Email: cwang8@wpi.edu   | Github: @coyawa  
@@ -21,7 +21,9 @@ http://coyawa.github.io/DataVisFinal/
 https://github.com/coyawa/DataVisFinal  
 
 ##Screenshot:
+![](https://ww3.sinaimg.cn/large/006tKfTcgy1fd95lemjg1j31kw0zkk0b.jpg)
 ![](https://ww4.sinaimg.cn/large/006tKfTcgy1fd8vu8a0z1j31kw0y01d8.jpg)
+![](https://ww1.sinaimg.cn/large/006tKfTcgy1fd95lfs8hqj31kw0mb0xk.jpg)
 
 ##Background and Motivation
 
