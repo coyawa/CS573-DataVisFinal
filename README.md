@@ -2,7 +2,7 @@ Final Project - Interactive Data Visualization
 ===
 *Project Website: http://coyawa.github.io/DataVisFinal/*  
 *Project Process Book: xxxxxx*  
-*Project Video: xxxxx*  
+*Project Video: https://youtu.be/kskiV5tCm3o*  
                    
 ##Project Title: 
 WORLDWIDE MIGRATION PATTERN
