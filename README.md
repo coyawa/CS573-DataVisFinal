@@ -1,8 +1,11 @@
 Final Project - Interactive Data Visualization  
 ===
-*Please check more detail in [Project-Proposal by Congyang-Yimin-Xiaoqun final.pdf](https://github.com/coyawa/DataVisFinal/blob/master/Project-Proposal%20by%20Congyang-Yimin-Xiaoqun%20final.pdf)*                        
+*Project Website: http://coyawa.github.io/DataVisFinal/*
+*Project Process Book: xxxxxx*
+*Project Video: xxxxx*
+                   
 ##Project Title: 
-Worldwide Human Migration  
+WORLDWIDE MIGRATION PATTERN
 
 ##Team Members:
 Congyang Wang | Email: cwang8@wpi.edu   | Github: @coyawa  
