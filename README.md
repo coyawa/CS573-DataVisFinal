@@ -1,7 +1,7 @@
 Final Project - Interactive Data Visualization  
 ===
 *Project Website: http://coyawa.github.io/DataVisFinal/*  
-*Project Process Book: xxxxxx*  
+*Project Process Book: https://github.com/coyawa/DataVisFinal/blob/gh-pages/Process%20Book.pdf*  
 *Project Video: https://youtu.be/kskiV5tCm3o*  
                    
 ##Project Title: 
