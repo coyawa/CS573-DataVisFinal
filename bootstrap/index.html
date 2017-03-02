@@ -121,7 +121,7 @@
         margin:0;
     }
     #tooltip tr td:nth-child(1){
-        width:50px;
+        width:60px;
     }
     #tooltip tr td:nth-child(2){
         text-align:center;
@@ -226,9 +226,14 @@
       width: 280px;
       }
     .div-inline{ display:inline}
+
+    h3 {
+    position: relative;
+    left: -10%;
+  }
     </style>
 
-    
+
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -344,10 +349,10 @@
     </body>
     <script type="text/javascript">
     <!-- Draw map-->
-    var dispatch1 = d3.dispatch('load'); 
+    var dispatch1 = d3.dispatch('load');
     var balan_max = 0;
     var balan_min = 0;
-    var yearchoose = 2000; 
+    var yearchoose = 2000;
     var jsonData = undefined;
 
     d3.json("data/data.json", function(error, data){
@@ -395,7 +400,7 @@
                 for(m in map_in){
                     if (i ==j && i==m){
                         var dict = {};
-                        
+
                         dict['CountryCode'] = i;
                         dict['Population'] = map_pop[i];
                         dict['Moveout'] = map_out[i];
@@ -433,14 +438,14 @@
                 "<tr><td>Movein</td><td>"+(numberWithCommas(mapdata[i].Movein))+"</td></tr>"+
                 "<tr><td>Moveout</td><td>"+(numberWithCommas(mapdata[i].Moveout))+"</td></tr>"+
                 "<tr><td>Balance</td><td>"+(numberWithCommas(mapdata[i].Balance))+"</td></tr>"+
-                "</table>"; 
+                "</table>";
             }
         }
     };
     function mouseOvermap(d){
-        d3.select("#tooltip").transition().duration(200).style("opacity", .9);              
-        d3.select("#tooltip").html(maptoolTip(d))  
-        .style("left", (d3.event.pageX) + "px")     
+        d3.select("#tooltip").transition().duration(200).style("opacity", .9);
+        d3.select("#tooltip").html(maptoolTip(d))
+        .style("left", (d3.event.pageX) + "px")
         .style("top", (d3.event.pageY - 28) + "px");
     };
 
@@ -449,7 +454,7 @@
     };
     function drawmap(data){
         var height = 550;
-        var width = 1000;    
+        var width = 1000;
         var projection = d3.geo.mercator()
             .scale([140])
             .translate([width / 2, height/1.4 ]);
@@ -465,7 +470,7 @@
             //console.log(mapdata[i].Population);
             if(mapdata[i].Population< pop_min){ pop_min = mapdata[i].Population};
             if(mapdata[i].Population> pop_max){ pop_max = mapdata[i].Population};
-        };  
+        };
         //console.log(balan_min)
         //console.log(balan_max)
         var color_lst = [-10000000, -5000000, -2000000,-1000000, 0, 100000, 5000000, 10000000, 35000000];
@@ -511,7 +516,7 @@
             //console.log(map_pop);
         })
     }
-    
+
 
     dispatch1.on("load.map", function(data){
         drawmap(data);
@@ -543,15 +548,14 @@
 <!-- This is for the Chord visualization -->
     <section id="v2">
     <body>
-    <aside><font color="red">Human Migration Chord</font></aside>
-    <div class="div-inline" id = 'chordChart'  style="height: 600px">
-        
-    </div>
+    <h3><strong>1960&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1970&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1980</strong></h3>
+    <div class="div-inline" id = 'chordsel'  style="height: 400px"></div>
+    <div class="div-inline" id = 'chordChart'  style="height: 600px"></div>
+    <h3><strong>1990&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2000</strong></h3>
     <div>
     <a href="#intro3" class="btn btn-primary btn-xl page-scroll">Next</a>
     </div>
     <script>
-        var dispatch = d3.dispatch("load", "yearchange");
 
         var chord60,chord70,chord80,chord90,chord00;
         var cities = {};
@@ -647,8 +651,20 @@
         svg5.append("circle")
         .attr("r", outerRadius);
 
-        d3.csv("data/country_"+yr.substring(2,4)+".csv", function(citi) {
-          cities = citi
+        d3.csv("data/country_"+"60"+".csv", function(citi) {
+          cities1 = citi
+        })
+        d3.csv("data/country_"+"70"+".csv", function(citi) {
+          cities2 = citi
+        })
+        d3.csv("data/country_"+"80"+".csv", function(citi) {
+          cities3 = citi
+        })
+        d3.csv("data/country_"+"90"+".csv", function(citi) {
+          cities4 = citi
+        })
+        d3.csv("data/country_"+"00"+".csv", function(citi) {
+          cities5 = citi
         })
 
         function test(callback){
@@ -665,17 +681,46 @@
           })
         }
         //  layout.matrix(matrix);
-        function chordtoolTip(d,i){
+        function chordtoolTip(d,i,num){
+                    if(num == 1){
                     return "<h4>"+"</h4><table>"+
-                      "<span style='color:red'>" + cities[i].name + "</span>"+
-                      "<tr><td>Movein:</td><td>"+(numberWithCommas(cities[i].Inflow))+"</td></tr>"+
-                      "<tr><td>Moveout:</td><td>"+(numberWithCommas(cities[i].Outflow))+"</td></tr>"+
-                      "<tr><td>NetFlow:</td><td>"+(numberWithCommas(cities[i].Netflow))+"</td></tr>"+
-                      "</table>";
+                      "<span style='color:red'>" + cities1[i].name + "</span>"+
+                      "<tr><td>Move in:</td><td>"+(numberWithCommas(cities1[i].Inflow))+"</td></tr>"+
+                      "<tr><td>Move out:</td><td>"+(numberWithCommas(cities1[i].Outflow))+"</td></tr>"+
+                      "<tr><td>NetFlow:</td><td>"+(numberWithCommas(cities1[i].Netflow))+"</td></tr>"+
+                      "</table>";}
+                    if(num == 2){
+                    return "<h4>"+"</h4><table>"+
+                      "<span style='color:red'>" + cities2[i].name + "</span>"+
+                      "<tr><td>Move in:</td><td>"+(numberWithCommas(cities2[i].Inflow))+"</td></tr>"+
+                      "<tr><td>Move out:</td><td>"+(numberWithCommas(cities2[i].Outflow))+"</td></tr>"+
+                      "<tr><td>NetFlow:</td><td>"+(numberWithCommas(cities2[i].Netflow))+"</td></tr>"+
+                      "</table>";}
+                    if(num == 3){
+                    return "<h4>"+"</h4><table>"+
+                      "<span style='color:red'>" + cities3[i].name + "</span>"+
+                      "<tr><td>Move in:</td><td>"+(numberWithCommas(cities3[i].Inflow))+"</td></tr>"+
+                      "<tr><td>Move out:</td><td>"+(numberWithCommas(cities3[i].Outflow))+"</td></tr>"+
+                      "<tr><td>NetFlow:</td><td>"+(numberWithCommas(cities3[i].Netflow))+"</td></tr>"+
+                      "</table>";}
+                    if(num == 4){
+                    return "<h4>"+"</h4><table>"+
+                      "<span style='color:red'>" + cities4[i].name + "</span>"+
+                      "<tr><td>Move in:</td><td>"+(numberWithCommas(cities4[i].Inflow))+"</td></tr>"+
+                      "<tr><td>Move out:</td><td>"+(numberWithCommas(cities4[i].Outflow))+"</td></tr>"+
+                      "<tr><td>NetFlow:</td><td>"+(numberWithCommas(cities4[i].Netflow))+"</td></tr>"+
+                      "</table>";}
+                    if(num == 5){
+                    return "<h4>"+"</h4><table>"+
+                      "<span style='color:red'>" + cities5[i].name + "</span>"+
+                      "<tr><td>Move in:</td><td>"+(numberWithCommas(cities5[i].Inflow))+"</td></tr>"+
+                      "<tr><td>Move out:</td><td>"+(numberWithCommas(cities5[i].Outflow))+"</td></tr>"+
+                      "<tr><td>NetFlow:</td><td>"+(numberWithCommas(cities5[i].Netflow))+"</td></tr>"+
+                      "</table>";}
         };
-        function mouseOverchord(d,i){
+        function mouseOverchord(d,i,num){
               d3.select("#tooltip").transition().duration(200).style("opacity", .9);
-              d3.select("#tooltip").html(chordtoolTip(d,i))
+              d3.select("#tooltip").html(chordtoolTip(d,i,num))
               .style("left", (d3.event.pageX) + "px")
               .style("top", (d3.event.pageY - 28) + "px");
         };
@@ -716,69 +761,69 @@
         .data(layout1.chords)
         .enter().append("path")
         .attr("class", "chord")
-        .style("fill", function(d) { return cities[d.source.index].color; })
+        .style("fill", function(d) { return cities1[d.source.index].color; })
         .attr("d", path1);
         chord70 = svg2.selectAll(".chord")
         .data(layout2.chords)
         .enter().append("path")
         .attr("class", "chord")
-        .style("fill", function(d) {return cities[d.source.index].color; })
+        .style("fill", function(d) {return cities2[d.source.index].color; })
         .attr("d", path2);
         chord80 = svg3.selectAll(".chord")
         .data(layout3.chords)
         .enter().append("path")
         .attr("class", "chord")
-        .style("fill", function(d) { return cities[d.source.index].color; })
+        .style("fill", function(d) { return cities3[d.source.index].color; })
         .attr("d", path3);
         chord90 = svg4.selectAll(".chord")
         .data(layout4.chords)
         .enter().append("path")
         .attr("class", "chord")
-        .style("fill", function(d) { return cities[d.source.index].color; })
+        .style("fill", function(d) { return cities4[d.source.index].color; })
         .attr("d", path4);
         chord00 = svg5.selectAll(".chord")
         .data(layout5.chords)
         .enter().append("path")
         .attr("class", "chord")
-        .style("fill", function(d) { return cities[d.source.index].color; })
+        .style("fill", function(d) { return cities5[d.source.index].color; })
         .attr("d", path5);
         // Add the group arc.
         ////////////拉出來寫//////////
 
-        groupPath1 = group1.on("mouseover", mouseover).on("mouseout", mouseout)
+        groupPath1 = group1.on("mouseover", mouseover)
         .append("path")
         .attr("id", function(d, i) { return "group" + i; })
         .attr("d", arc)
-        .style("fill", function(d, i) { return cities[i].color; })
-        .on('mouseover', mouseOverchord)
+        .style("fill", function(d, i) { return cities1[i].color; })
+        .on('mouseover',function(d,i){return mouseOverchord(d,i,1);})
         .on('mouseout',  mouseOutchord);
-        groupPath2 = group2.on("mouseover", mouseover).on("mouseout", mouseout)
+        groupPath2 = group2.on("mouseover", mouseover)
         .append("path")
         .attr("id", function(d, i) { return "group" + i; })
         .attr("d", arc)
-        .style("fill", function(d, i) { return cities[i].color; })
-        .on('mouseover', mouseOverchord)
+        .style("fill", function(d, i) { return cities2[i].color; })
+        .on('mouseover',function(d,i){return mouseOverchord(d,i,2);})
         .on('mouseout',  mouseOutchord);
-        groupPath3 = group3.on("mouseover", mouseover).on("mouseout", mouseout)
+        groupPath3 = group3.on("mouseover", mouseover)
         .append("path")
         .attr("id", function(d, i) { return "group" + i; })
         .attr("d", arc)
-        .style("fill", function(d, i) { return cities[i].color; })
-        .on('mouseover', mouseOverchord)
+        .style("fill", function(d, i) { return cities3[i].color; })
+        .on('mouseover',function(d,i){return mouseOverchord(d,i,3);})
         .on('mouseout',  mouseOutchord);
-        groupPath4 = group4.on("mouseover", mouseover).on("mouseout", mouseout)
+        groupPath4 = group4.on("mouseover", mouseover)
         .append("path")
         .attr("id", function(d, i) { return "group" + i; })
         .attr("d", arc)
-        .style("fill", function(d, i) { return cities[i].color; })
-        .on('mouseover', mouseOverchord)
+        .style("fill", function(d, i) { return cities4[i].color; })
+        .on('mouseover',function(d,i){return mouseOverchord(d,i,4);})
         .on('mouseout',  mouseOutchord);
-        groupPath5 = group5.on("mouseover", mouseover).on("mouseout", mouseout)
+        groupPath5 = group5.on("mouseover", mouseover)
         .append("path")
         .attr("id", function(d, i) { return "group" + i; })
         .attr("d", arc)
-        .style("fill", function(d, i) { return cities[i].color; })
-        .on('mouseover', mouseOverchord)
+        .style("fill", function(d, i) { return cities5[i].color; })
+        .on('mouseover', function(d,i){return mouseOverchord(d,i,5);})
         .on('mouseout',  mouseOutchord);
         // Add a text label.
         /*var groupText = group.append("text")
@@ -794,43 +839,43 @@
 
         // Add an elaborate mouseover title for each chord.
          chord60.append("title").text(function(d) {
-         return cities[d.source.index].name
-         + " → " + cities[d.target.index].name
+         return cities1[d.source.index].name
+         + " → " + cities1[d.target.index].name
          + ": " + d.source.value
-         + "\n" + cities[d.target.index].name
-         + " → " + cities[d.source.index].name
+         + "\n" + cities1[d.target.index].name
+         + " → " + cities1[d.source.index].name
          + ": " + d.target.value;
          });
          chord70.append("title").text(function(d) {
-         return cities[d.source.index].name
-         + " → " + cities[d.target.index].name
+         return cities2[d.source.index].name
+         + " → " + cities2[d.target.index].name
          + ": " + d.source.value
-         + "\n" + cities[d.target.index].name
-         + " → " + cities[d.source.index].name
+         + "\n" + cities2[d.target.index].name
+         + " → " + cities2[d.source.index].name
          + ": " + d.target.value;
          });
          chord80.append("title").text(function(d) {
-         return cities[d.source.index].name
-         + " → " + cities[d.target.index].name
+         return cities3[d.source.index].name
+         + " → " + cities3[d.target.index].name
          + ": " + d.source.value
-         + "\n" + cities[d.target.index].name
-         + " → " + cities[d.source.index].name
+         + "\n" + cities3[d.target.index].name
+         + " → " + cities3[d.source.index].name
          + ": " + d.target.value;
          });
          chord90.append("title").text(function(d) {
-         return cities[d.source.index].name
-         + " → " + cities[d.target.index].name
+         return cities4[d.source.index].name
+         + " → " + cities4[d.target.index].name
          + ": " + d.source.value
-         + "\n" + cities[d.target.index].name
-         + " → " + cities[d.source.index].name
+         + "\n" + cities4[d.target.index].name
+         + " → " + cities4[d.source.index].name
          + ": " + d.target.value;
          });
          chord00.append("title").text(function(d) {
-         return cities[d.source.index].name
-         + " → " + cities[d.target.index].name
+         return cities5[d.source.index].name
+         + " → " + cities5[d.target.index].name
          + ": " + d.source.value
-         + "\n" + cities[d.target.index].name
-         + " → " + cities[d.source.index].name
+         + "\n" + cities5[d.target.index].name
+         + " → " + cities5[d.source.index].name
          + ": " + d.target.value;
          });
 
@@ -874,6 +919,78 @@
           return null;
           });
         }
+        d3.select("body").select("#chordsel").html(chordHtml());
+        function chordHtml(){
+          str = "<select multiple='multiple' size = 20 id='sel'>";
+          for(var j=0;j<cities5.length;j++){
+            str = str + "<option value= 'cities5[j].name+'>"
+                  + cities5[j].name+"</option>"
+          }
+          str = str + "</select>";
+          return str;
+        }
+
+        document.getElementById("sel").onchange =function(){
+        var par = []
+        for (var i = 0; i < this.options.length; i++) {
+           if(this.options[i].selected){
+             par.push(i);
+            }
+        }
+        mouseoverT(par);
+      }
+        /*for(var i=0; i<cities5.length; i++){
+
+        var word = cities5[i].name;
+        var holder = d3.select("body").select('#national')
+              .append("svg")
+              .attr("width", 150)
+              .attr("height", 70);
+        // draw a rectangle
+        holder.append("a")
+            .append("rect")
+            .attr("x", 80)
+            .attr("y", 40)
+            .attr("height", 50)
+            .attr("width", 100)
+            .style("fill", cities5[i].color)
+            .attr("rx", 10)
+            .attr("ry", 10);
+
+        holder.on("click", function(i){return function(){ mouseoverT(i);}}(i));
+        // draw text on the screen
+        holder.append("text")
+            .attr("x", 130)
+            .attr("y", 70)
+            .style("fill", "white")
+            .style("font-size", "10px")
+            .attr("dy", ".35em")
+            .attr("text-anchor", "middle")
+            .style("pointer-events", "none")
+            .text(word);
+        };*/
+        function mouseoverT(i) {
+              chord60.classed("fade", function(p) {
+              return p.source.index != i
+              && p.target.index != i;
+              });
+              chord70.classed("fade", function(p) {
+              return p.source.index != i
+              && p.target.index != i;
+              });
+              chord80.classed("fade", function(p) {
+              return p.source.index != i
+              && p.target.index != i;
+              });
+              chord90.classed("fade", function(p) {
+              return p.source.index != i
+              && p.target.index != i;
+              });
+              chord00.classed("fade", function(p) {
+              return p.source.index != i
+              && p.target.index != i;
+              });
+            }
 
         });//Call back
         //});// d3.csv
@@ -927,7 +1044,7 @@
     var dispatch2 = d3.dispatch('load');
     var csvData = undefined;
     var show_country_list = [];
-    
+
     d3.csv('data/parallel_new.csv', function (error, data) {
         if (error) throw error;
         // initial load for all of the maps
@@ -935,7 +1052,7 @@
         csvData = data;
         //console.log(data);
     });
-    
+
     dispatch2.on("load.parallel", function(data){
         drawparallel(data);
     });
@@ -984,7 +1101,7 @@
           customDatalist: true
         });
         webshim.setOptions('forms-ext', {
-          replaceUI: true 
+          replaceUI: true
         });
         webshim.polyfill('forms forms-ext');
         //Reference: https://mflevine.github.io/PokeVis/index.html
@@ -1084,13 +1201,13 @@
         var color = d3.scale.ordinal().range(["#d73027","#4575b4"]);
         var x = d3.scale.ordinal()
                 .domain(dimensions.map(function(dim) {
-                     //console.log(dim); 
-                     return dim.name; 
+                     //console.log(dim);
+                     return dim.name;
                 }))
                 .rangePoints([0, para_width-margin.left]);
-        var line = d3.svg.line().defined(function(d) { 
+        var line = d3.svg.line().defined(function(d) {
                     //console.log(d);
-                    return !isNaN(d[1]); 
+                    return !isNaN(d[1]);
                 });
         var yAxis = d3.svg.axis().orient("left");
         var dimension = svgpara.selectAll(".dimension")
@@ -1098,8 +1215,8 @@
                 .enter().append("g")
                 .attr("class", "dimension")
                 .attr("transform", function(d) {
-                    //console.log(d.name); 
-                    return "translate(" + x(d.name) + ")"; 
+                    //console.log(d.name);
+                    return "translate(" + x(d.name) + ")";
                 });
         //console.log(dimensions);
         var colordimension = dimensions[0];
@@ -1131,7 +1248,7 @@
             .enter().append("path")
             .attr('class','cord')
             .attr("d", draw)
-            .style("stroke", function(d,i) {console.log(i);return color(d[colordimension.name]); })
+            .style("stroke", function(d,i) {return color(d[colordimension.name]); })
             .style('opacity', 0.38)
             .on("mouseover", function(d,i){
                 svgpara.selectAll('.cord').transition().duration(250)
@@ -1168,7 +1285,7 @@
             return line(dimensions.map(function(dim) {
                 return [x(dim.name), dim.scale(d[dim.name])];
             }));
-        };  
+        };
     function brushstart() {
         d3.event.sourceEvent.stopPropagation();
     };
@@ -1302,4 +1419,3 @@
     <script src="js/creative.min.js"></script>
 
 </html>
- 
