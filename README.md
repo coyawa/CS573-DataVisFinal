@@ -1,6 +1,9 @@
 Final Project - Interactive Data Visualization  
 ===
-
+*Project Website: http://coyawa.github.io/DataVisFinal/*  
+*Project Process Book: xxxxxx*  
+*Project Video: xxxxx*  
+                   
 ##Team Members:
 Congyang Wang | Email: cwang8@wpi.edu   | Github: @coyawa  
 Yimin Lin             | Email: ylin6@wpi.edu        | Github: @YiminLin1994  
